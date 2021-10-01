@@ -1,5 +1,5 @@
 const Message = (props) => {
-	return <div className='alert alert-light text-start'>{props.text}</div>;
+	return <div className='alert'>{props.text}</div>;
 };
 
 export default Message;
