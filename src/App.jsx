@@ -22,9 +22,9 @@ const App = () => {
 			) : (
 				<CreateCourse
 					authors={authors}
-					createCourse={({ newCourse, courseAuthors }) => {
-						// console.log(newCourse, courseAuthors);
-						setAuthors((oldAuthorslist) => [...oldAuthorslist, courseAuthors]);
+					createCourse={({ newCourse, allAuthors }) => {
+						// console.log(allAuthors);
+						// setAuthors((oldAuthorslist) => [...oldAuthorslist, allAuthors]);
 						setCourses((oldCourseslist) => [...oldCourseslist, newCourse]);
 						setCoursesVisibility(!areCoursesVisible);
 					}}

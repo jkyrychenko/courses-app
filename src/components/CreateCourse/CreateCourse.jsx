@@ -5,6 +5,7 @@ import Message from '../Message/Message';
 import formatDuration from '../../mixins/format-duration';
 
 const CreateCourse = (props) => {
+	const [allAuthors, setAllAuthors] = useState(props.authors);
 	const [authorslist, setAuthorsList] = useState(props.authors);
 	const [newAuthorName, setNewAuthorName] = useState('');
 	const [courseAuthors, setCourseAuthors] = useState([]);
@@ -25,7 +26,9 @@ const CreateCourse = (props) => {
 		};
 
 		setAuthorsList((oldAuthorslist) => [...oldAuthorslist, newAuthor]);
+		setAllAuthors((oldAuthors) => [...oldAuthors, newAuthor]);
 		setNewAuthorName('');
+		console.log(allAuthors);
 	};
 
 	const addNewAuthorToCourse = (author) => {
@@ -46,16 +49,28 @@ const CreateCourse = (props) => {
 		setUserDuration(formatDuration(minutes));
 	};
 
+	const validateForm = () => {
+		if (!title || title.trim() === '' || title.length < 2) {
+			alert('Please, fill all the fields!');
+			return false;
+		}
+		if (!description || description.trim() === '' || description.length < 2) {
+			alert('Please, fill all the fields!');
+			return false;
+		}
+		if (!duration || duration <= 0) {
+			alert('Please, enter duration of the course in minutes!');
+			return false;
+		}
+		return true;
+	};
+
 	const createNewCourse = (e) => {
 		e.preventDefault();
 
-		[title, description].map((value) => {
-			if (!value || value.trim() === '' || value.length < 2) {
-				alert('Please, enter valid title and description for the course!');
-				return false;
-			}
-
-			return [title, description];
+		let authorIdList = [];
+		courseAuthors.map((author) => {
+			return authorIdList.push(author.id);
 		});
 
 		let newCourse = {
@@ -64,10 +79,12 @@ const CreateCourse = (props) => {
 			description: description,
 			creationDate: new Date().toLocaleDateString(),
 			duration: duration,
-			authors: courseAuthors,
+			authors: authorIdList,
 		};
 
-		props.createCourse({ newCourse, courseAuthors });
+		if (validateForm()) {
+			props.createCourse({ newCourse, allAuthors });
+		}
 	};
 
 	return (
