@@ -2,6 +2,7 @@ import { useState } from 'react';
 import CoursesList from '../Courses/CoursesList';
 // import Search from '../Search/Search';
 import Button from '../Button/Button';
+import Input from '../Input/Input';
 import Message from '../Message/Message';
 
 const Courses = (props) => {
@@ -13,7 +14,7 @@ const Courses = (props) => {
 		e.preventDefault();
 		if (query.trim() === '') {
 			setCourses(props.courses);
-			return;
+			return false;
 		}
 
 		let searchedQuery = query.toLowerCase();
@@ -30,15 +31,13 @@ const Courses = (props) => {
 			<div className='container'>
 				<div className='d-flex mb-4'>
 					<div className='col'>
-						{/* <Search action={(e) => searchCourses(e)} /> */}
+						{/* <Search action={({ query }) => searchCourses({ query })} /> */}
 						<form onSubmit={(e) => searchCourses(e)}>
 							<div className='input-group'>
-								<input
-									type='text'
-									className='form-control'
+								<Input
 									placeholder='Enter course name...'
 									value={query}
-									onChange={(e) => setQuery(e.target.value)}
+									change={(e) => setQuery(e.target.value)}
 								/>
 								<Button title='Search' type='submit' />
 							</div>
