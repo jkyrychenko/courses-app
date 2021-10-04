@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
 import formatDuration from '../../mixins/format-duration';
@@ -93,16 +94,12 @@ const CreateCourse = (props) => {
 				<form onSubmit={createNewCourse} className='d-grid gap-4'>
 					<div className='d-flex align-items-end'>
 						<div className='col-6'>
-							<label htmlFor='courseTitle' className='form-label'>
-								Title
-							</label>
-							<input
-								type='text'
-								className='form-control'
+							<Input
 								id='courseTitle'
 								placeholder='Enter title...'
+								title='Title'
 								value={title}
-								onChange={(e) => setTitle(e.target.value)}
+								change={(e) => setTitle(e.target.value)}
 							/>
 						</div>
 						<div className='col-6 text-end'>
@@ -130,25 +127,21 @@ const CreateCourse = (props) => {
 					</div>
 					<div className='row bg-light p-4 border rounded'>
 						<div className='col-6 mb-4'>
-							<h5 className='text-center mb-4'>Add author</h5>
+							<h5 className='mb-4 text-center'>Add author</h5>
 							<div>
-								<label htmlFor='createAuthor' className='form-label'>
-									Author name
-								</label>
-							</div>
-							<div className='input-group'>
-								<input
-									type='text'
-									className='form-control'
+								<Input
 									id='createAuthor'
 									placeholder='Enter author name...'
+									title='Author name'
 									value={newAuthorName}
-									onChange={(e) => setNewAuthorName(e.target.value)}
+									change={(e) => setNewAuthorName(e.target.value)}
 								/>
-								<Button
-									title='Create author'
-									action={() => addNewAuthor(newAuthorName)}
-								/>
+								<div className='text-center mt-4'>
+									<Button
+										title='Create author'
+										action={() => addNewAuthor(newAuthorName)}
+									/>
+								</div>
 							</div>
 						</div>
 						<div className='col-6 mb-4'>
@@ -172,16 +165,13 @@ const CreateCourse = (props) => {
 						<div className='col-6'>
 							<h5 className='text-center mb-4'>Duration</h5>
 							<div>
-								<label htmlFor='courseDuration' className='form-label'>
-									Duration
-								</label>
-								<input
+								<Input
 									type='number'
-									className='form-control'
 									id='courseDuration'
 									placeholder='Enter duration in minutes...'
+									title='Duration'
 									value={duration}
-									onChange={(e) => getUserDuration(e.target.value)}
+									change={(e) => getUserDuration(e.target.value)}
 								/>
 							</div>
 							<div className='fs-4 mt-2'>
