@@ -23,11 +23,12 @@ const App = () => {
 				<CreateCourse
 					authors={authors}
 					createCourse={({ newCourse, allAuthors }) => {
-						// console.log(allAuthors);
-						// setAuthors((oldAuthorslist) => [...oldAuthorslist, allAuthors]);
+						console.log(allAuthors);
+						setAuthors((oldAuthorslist) => [...oldAuthorslist, allAuthors]);
 						setCourses((oldCourseslist) => [...oldCourseslist, newCourse]);
 						setCoursesVisibility(!areCoursesVisible);
 					}}
+					cancel={() => setCoursesVisibility(!areCoursesVisible)}
 				/>
 			)}
 		</div>

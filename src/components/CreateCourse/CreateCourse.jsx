@@ -50,12 +50,12 @@ const CreateCourse = (props) => {
 	};
 
 	const validateForm = () => {
-		if (!title || title.trim() === '' || title.length < 2) {
-			alert('Please, fill all the fields!');
+		if (!title || title.trim() === '') {
+			alert('Please, fill in all fields!');
 			return false;
 		}
 		if (!description || description.trim() === '' || description.length < 2) {
-			alert('Please, fill all the fields!');
+			alert('Please, fill in all fields!');
 			return false;
 		}
 		if (!duration || duration <= 0) {
@@ -112,11 +112,7 @@ const CreateCourse = (props) => {
 								customClass='me-4'
 								type='submit'
 							/>
-							<Button
-								title='Cancel'
-								color='danger'
-								action={props.createCourse}
-							/>
+							<Button title='Cancel' color='danger' action={props.cancel} />
 						</div>
 					</div>
 					<div>
