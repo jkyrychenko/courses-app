@@ -2,11 +2,16 @@ import { useState } from 'react';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 
-const Search = (props) => {
+const Search = ({ action }) => {
 	const [query, setQuery] = useState('');
 
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		action(query);
+	};
+
 	return (
-		<form onSubmit={props.action({ query })}>
+		<form onSubmit={handleSubmit}>
 			<div className='input-group'>
 				<Input
 					placeholder='Enter course name...'
