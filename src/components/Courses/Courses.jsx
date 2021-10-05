@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import CoursesList from '../Courses/CoursesList';
-// import Search from '../Search/Search';
+import Search from '../Search/Search';
 import Button from '../Button/Button';
-import Input from '../Input/Input';
 import Message from '../Message/Message';
 
 const Courses = (props) => {
 	const authorsList = props.authors;
 	const [courses, setCourses] = useState(props.courses);
-	const [query, setQuery] = useState('');
 
-	const searchCourses = (e) => {
-		e.preventDefault();
+	const searchCourses = (query) => {
 		if (query.trim() === '') {
 			setCourses(props.courses);
 			return false;
@@ -31,17 +28,7 @@ const Courses = (props) => {
 			<div className='container'>
 				<div className='d-flex mb-4'>
 					<div className='col'>
-						{/* <Search action={({ query }) => searchCourses({ query })} /> */}
-						<form onSubmit={(e) => searchCourses(e)}>
-							<div className='input-group'>
-								<Input
-									placeholder='Enter course name...'
-									value={query}
-									change={(e) => setQuery(e.target.value)}
-								/>
-								<Button title='Search' type='submit' />
-							</div>
-						</form>
+						<Search action={searchCourses} />
 					</div>
 					<div className='col text-end'>
 						<Button title='Add new course' action={props.createCourse} />
