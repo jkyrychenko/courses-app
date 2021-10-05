@@ -10,12 +10,10 @@ const Input = (props) => {
 
 	return (
 		<>
-			{title ? (
+			{title && (
 				<label htmlFor={id} className={`form-label ${labelClass}`}>
 					{title}
 				</label>
-			) : (
-				''
 			)}
 			<input
 				type={type}
