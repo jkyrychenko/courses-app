@@ -2,12 +2,12 @@ import { useState } from 'react';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 
-const Search = ({ action }) => {
+const Search = ({ handleSearch }) => {
 	const [query, setQuery] = useState('');
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		action(query);
+		handleSearch(query);
 	};
 
 	return (
@@ -16,7 +16,7 @@ const Search = ({ action }) => {
 				<Input
 					placeholder='Enter course name...'
 					value={query}
-					change={(e) => setQuery(e.target.value)}
+					handleChange={(e) => setQuery(e.target.value)}
 				/>
 				<Button title='Search' type='submit' />
 			</div>

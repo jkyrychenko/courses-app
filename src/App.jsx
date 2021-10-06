@@ -10,6 +10,13 @@ const App = () => {
 	const [courses, setCourses] = useState(mockedCoursesList);
 	const [authors, setAuthors] = useState(mockedAuthorsList);
 
+	const createCourse = ({ newCourse, allAuthors }) => {
+		const updatedCoursesList = [...courses, newCourse];
+		setCourses(updatedCoursesList);
+		setAuthors(allAuthors);
+		setCoursesVisibility(!areCoursesVisible);
+	};
+
 	return (
 		<div className='App'>
 			<Header />
@@ -22,11 +29,7 @@ const App = () => {
 			) : (
 				<CreateCourse
 					authors={authors}
-					createCourse={({ newCourse, allAuthors }) => {
-						setAuthors(allAuthors);
-						setCourses((oldCourseslist) => [...oldCourseslist, newCourse]);
-						setCoursesVisibility(!areCoursesVisible);
-					}}
+					createCourse={createCourse}
 					cancel={() => setCoursesVisibility(!areCoursesVisible)}
 				/>
 			)}

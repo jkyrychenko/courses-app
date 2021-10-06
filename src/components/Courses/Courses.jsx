@@ -4,18 +4,17 @@ import Search from '../Search/Search';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
 
-const Courses = (props) => {
-	const authorsList = props.authors;
-	const [courses, setCourses] = useState(props.courses);
+const Courses = ({ courses, authors, createCourse }) => {
+	const [coursesList, setCourses] = useState(courses);
 
 	const searchCourses = (query) => {
-		if (query.trim() === '') {
-			setCourses(props.courses);
-			return false;
+		if (!query.trim()) {
+			setCourses(courses);
+			return;
 		}
 
 		let searchedQuery = query.toLowerCase();
-		let filteredCourses = props.courses.filter(
+		let filteredCourses = coursesList.filter(
 			(el) =>
 				el.id.toLowerCase().includes(searchedQuery) ||
 				el.title.toLowerCase().includes(searchedQuery)
@@ -28,14 +27,14 @@ const Courses = (props) => {
 			<div className='container'>
 				<div className='d-flex mb-4'>
 					<div className='col'>
-						<Search action={searchCourses} />
+						<Search handleSearch={searchCourses} />
 					</div>
 					<div className='col text-end'>
-						<Button title='Add new course' action={props.createCourse} />
+						<Button title='Add new course' handleClick={createCourse} />
 					</div>
 				</div>
-				{courses.length > 0 ? (
-					<CoursesList courses={courses} authorsList={authorsList} />
+				{coursesList.length > 0 ? (
+					<CoursesList coursesList={coursesList} authorsList={authors} />
 				) : (
 					<Message text='No courses found. Please search or create one.' />
 				)}
