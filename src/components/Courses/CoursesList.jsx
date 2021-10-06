@@ -1,20 +1,19 @@
 import CourseCard from './CourseCard';
 
-const CoursesList = (props) => {
+const CoursesList = ({ coursesList, authorsList }) => {
 	const findAuthorsById = (authors) => {
-		let courseAuthors = [];
-		authors.forEach((author) => {
-			if (props.authorsList.find((item) => item.id === author)) {
-				let name = props.authorsList.find((item) => item.id === author).name;
-				courseAuthors.push(name);
-			}
-		});
+		const courseAuthors = authors.reduce((names, author) => {
+			let name = authorsList.find((item) => item.id === author).name;
+			names.push(name);
+			return names;
+		}, []);
+
 		return courseAuthors;
 	};
 
 	return (
 		<div className='d-grid gap-4'>
-			{props.courses.map((course) => (
+			{coursesList.map((course) => (
 				<CourseCard
 					course={course}
 					authors={findAuthorsById(course.authors)}

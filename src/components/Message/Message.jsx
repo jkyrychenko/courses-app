@@ -1,5 +1,5 @@
-const Message = (props) => {
-	return <div className='alert'>{props.text}</div>;
+const Message = ({ text }) => {
+	return <div className='alert'>{text}</div>;
 };
 
 export default Message;

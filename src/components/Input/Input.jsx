@@ -1,13 +1,13 @@
-const Input = (props) => {
-	const type = props.type ? props.type : 'text';
-	const inputClass = props.inputClass;
-	const labelClass = props.labelClass;
-	const id = props.id;
-	const title = props.title;
-	const placeholder = props.placeholder;
-	const value = props.value;
-	const change = props.change;
-
+const Input = ({
+	type = 'text',
+	id,
+	title,
+	placeholder,
+	value,
+	inputClass,
+	labelClass,
+	handleChange,
+}) => {
 	return (
 		<>
 			{title && (
@@ -21,7 +21,7 @@ const Input = (props) => {
 				className={`form-control ${inputClass}`}
 				placeholder={placeholder}
 				value={value}
-				onChange={change}
+				onChange={handleChange}
 			/>
 		</>
 	);

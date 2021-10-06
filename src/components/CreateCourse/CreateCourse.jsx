@@ -4,21 +4,21 @@ import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
 import formatDuration from '../../mixins/format-duration';
+import isFormValid from '../../mixins/form-validation';
 
-const CreateCourse = (props) => {
-	const [allAuthors, setAllAuthors] = useState(props.authors);
-	const [authorslist, setAuthorsList] = useState(props.authors);
+const CreateCourse = ({ authors, createCourse, cancel }) => {
+	const [allAuthors, setAllAuthors] = useState(authors);
+	const [authorslist, setAuthorsList] = useState(authors);
 	const [newAuthorName, setNewAuthorName] = useState('');
 	const [courseAuthors, setCourseAuthors] = useState([]);
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [duration, setDuration] = useState('');
-	const [userDuration, setUserDuration] = useState('00:00 hours');
 
 	const addNewAuthor = (name) => {
-		if (!name || name.trim() === '' || name.length < 2) {
+		if (!name.trim() || name.length < 2) {
 			alert('Please, enter valid name!');
-			return false;
+			return;
 		}
 
 		let newAuthor = {
@@ -26,10 +26,13 @@ const CreateCourse = (props) => {
 			name: name,
 		};
 
-		setAuthorsList((oldAuthorslist) => [...oldAuthorslist, newAuthor]);
-		setAllAuthors((oldAuthors) => [...oldAuthors, newAuthor]);
+		const updatedAuthorsList = [...authorslist, newAuthor];
+		setAuthorsList(updatedAuthorsList);
+
+		const updatedAllAuthors = [...allAuthors, newAuthor];
+		setAllAuthors(updatedAllAuthors);
+
 		setNewAuthorName('');
-		console.log(allAuthors);
 	};
 
 	const addNewAuthorToCourse = (author) => {
@@ -42,49 +45,29 @@ const CreateCourse = (props) => {
 
 	const deleteCourseAuthor = (author) => {
 		setCourseAuthors(courseAuthors.filter((el) => el.id !== author.id));
-		setAuthorsList((oldAuthorslist) => [...oldAuthorslist, author]);
-	};
-
-	const getUserDuration = (minutes) => {
-		setDuration(minutes);
-		setUserDuration(formatDuration(minutes));
-	};
-
-	const validateForm = () => {
-		if (!title || title.trim() === '') {
-			alert('Please, fill in all fields!');
-			return false;
-		}
-		if (!description || description.trim() === '' || description.length < 2) {
-			alert('Please, fill in all fields!');
-			return false;
-		}
-		if (!duration || duration <= 0) {
-			alert('Please, enter duration of the course in minutes!');
-			return false;
-		}
-		return true;
+		const updatedAuthorsList = [...authorslist, author];
+		setAuthorsList(updatedAuthorsList);
 	};
 
 	const createNewCourse = (e) => {
 		e.preventDefault();
 
-		let authorIdList = [];
-		courseAuthors.map((author) => {
-			return authorIdList.push(author.id);
-		});
+		const authorIdList = courseAuthors.reduce((ids, author) => {
+			ids.push(author.id);
+			return ids;
+		}, []);
 
-		let newCourse = {
+		const newCourse = {
 			id: uuidv4(),
-			title: title,
-			description: description,
+			title,
+			description,
 			creationDate: new Date().toLocaleDateString(),
-			duration: duration,
+			duration,
 			authors: authorIdList,
 		};
 
-		if (validateForm()) {
-			props.createCourse({ newCourse, allAuthors });
+		if (isFormValid({ title, description, duration })) {
+			createCourse({ newCourse, allAuthors });
 		}
 	};
 
@@ -99,7 +82,7 @@ const CreateCourse = (props) => {
 								placeholder='Enter title...'
 								title='Title'
 								value={title}
-								change={(e) => setTitle(e.target.value)}
+								handleChange={(e) => setTitle(e.target.value)}
 							/>
 						</div>
 						<div className='col-6 text-end'>
@@ -109,7 +92,7 @@ const CreateCourse = (props) => {
 								customClass='me-4'
 								type='submit'
 							/>
-							<Button title='Cancel' color='danger' action={props.cancel} />
+							<Button title='Cancel' color='danger' handleClick={cancel} />
 						</div>
 					</div>
 					<div>
@@ -134,12 +117,12 @@ const CreateCourse = (props) => {
 									placeholder='Enter author name...'
 									title='Author name'
 									value={newAuthorName}
-									change={(e) => setNewAuthorName(e.target.value)}
+									handleChange={(e) => setNewAuthorName(e.target.value)}
 								/>
 								<div className='text-center mt-4'>
 									<Button
 										title='Create author'
-										action={() => addNewAuthor(newAuthorName)}
+										handleClick={() => addNewAuthor(newAuthorName)}
 									/>
 								</div>
 							</div>
@@ -156,7 +139,7 @@ const CreateCourse = (props) => {
 										<Button
 											title='Add author'
 											color='warning'
-											action={() => addNewAuthorToCourse(author)}
+											handleClick={() => addNewAuthorToCourse(author)}
 										/>
 									</div>
 								))}
@@ -171,12 +154,12 @@ const CreateCourse = (props) => {
 									placeholder='Enter duration in minutes...'
 									title='Duration'
 									value={duration}
-									change={(e) => getUserDuration(e.target.value)}
+									handleChange={(e) => setDuration(e.target.value)}
 								/>
 							</div>
 							<div className='fs-4 mt-2'>
 								Duration:&nbsp;
-								<strong>{userDuration}</strong>
+								<strong>{formatDuration(duration)}</strong>
 							</div>
 						</div>
 						<div className='col-6 text-center'>
@@ -192,7 +175,7 @@ const CreateCourse = (props) => {
 											<Button
 												title='Delete author'
 												color='danger'
-												action={() => deleteCourseAuthor(author)}
+												handleClick={() => deleteCourseAuthor(author)}
 											/>
 										</div>
 									))

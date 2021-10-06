@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import Button from '../Button/Button';
 import formatDuration from '../../mixins/format-duration';
 
-const CourseCard = (props) => {
-	const course = props.course;
-	const authors = props.authors;
+const CourseCard = ({ course, authors }) => {
 	const [description, setDescription] = useState(course.description);
 
 	const replaceTextWithEllipsis = () => {
