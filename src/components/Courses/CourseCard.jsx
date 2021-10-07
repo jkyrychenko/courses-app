@@ -1,4 +1,4 @@
-import Button from '../Button/Button';
+import { Link } from 'react-router-dom';
 import formatDuration from '../../mixins/format-duration';
 
 const CourseCard = ({ course, authors }) => {
@@ -19,7 +19,9 @@ const CourseCard = ({ course, authors }) => {
 					<strong>Created:</strong> &nbsp; {course.creationDate}
 				</div>
 				<div className='text-center pt-3'>
-					<Button title='Show course' color='warning' />
+					<Link to={`/courses/${course.id}`} className='btn btn-warning'>
+						Show course
+					</Link>
 				</div>
 			</div>
 		</article>
