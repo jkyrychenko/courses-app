@@ -16,3 +16,10 @@ code {
   margin-right: 0;
   margin-left: 0;
 }
+
+.box-truncate {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
