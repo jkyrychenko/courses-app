@@ -1,22 +1,13 @@
 import CourseCard from './CourseCard';
+import getAuthorsById from '../../mixins/get-authors';
 
-const CoursesList = ({ coursesList, authorsList }) => {
-	const findAuthorsById = (authors) => {
-		const courseAuthors = authors.reduce((names, author) => {
-			let name = authorsList.find((item) => item.id === author).name;
-			names.push(name);
-			return names;
-		}, []);
-
-		return courseAuthors;
-	};
-
+const CoursesList = ({ coursesList }) => {
 	return (
 		<div className='d-grid gap-4'>
 			{coursesList.map((course) => (
 				<CourseCard
 					course={course}
-					authors={findAuthorsById(course.authors)}
+					authors={getAuthorsById(course.authors)}
 					key={course.id}
 				/>
 			))}

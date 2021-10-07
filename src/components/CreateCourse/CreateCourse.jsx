@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Input from '../Input/Input';
@@ -6,7 +7,7 @@ import Message from '../Message/Message';
 import formatDuration from '../../mixins/format-duration';
 import isFormValid from '../../mixins/form-validation';
 
-const CreateCourse = ({ authors, createCourse, cancel }) => {
+const CreateCourse = ({ authors, createCourse }) => {
 	const [allAuthors, setAllAuthors] = useState(authors);
 	const [authorslist, setAuthorsList] = useState(authors);
 	const [newAuthorName, setNewAuthorName] = useState('');
@@ -92,7 +93,9 @@ const CreateCourse = ({ authors, createCourse, cancel }) => {
 								customClass='me-4'
 								type='submit'
 							/>
-							<Button title='Cancel' color='danger' handleClick={cancel} />
+							<Link to='/courses' className='btn btn-danger'>
+								Cancel
+							</Link>
 						</div>
 					</div>
 					<div>

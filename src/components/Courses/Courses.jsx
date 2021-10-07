@@ -1,7 +1,7 @@
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import CoursesList from '../Courses/CoursesList';
 import Search from '../Search/Search';
-import Button from '../Button/Button';
 import Message from '../Message/Message';
 
 const Courses = ({ courses, authors, createCourse }) => {
@@ -30,11 +30,17 @@ const Courses = ({ courses, authors, createCourse }) => {
 						<Search handleSearch={searchCourses} />
 					</div>
 					<div className='col text-end'>
-						<Button title='Add new course' handleClick={createCourse} />
+						<Link
+							to='/courses/add'
+							onClick={createCourse}
+							className='btn btn-info'
+						>
+							Add new course
+						</Link>
 					</div>
 				</div>
 				{coursesList.length > 0 ? (
-					<CoursesList coursesList={coursesList} authorsList={authors} />
+					<CoursesList coursesList={coursesList} />
 				) : (
 					<Message text='No courses found. Please search or create one.' />
 				)}
