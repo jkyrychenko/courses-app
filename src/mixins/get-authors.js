@@ -1,13 +1,13 @@
-// import mockedAuthorsList from '../data/mockedAuthorsList';
+const getAuthorsById = (authors, authorsList) => {
+	if (!authors || authorsList.length < 1) {
+		return [];
+	}
 
-const getAuthorsById = (authors) => {
-	// const courseAuthors = authors.reduce((names, author) => {
-	// 	let name = mockedAuthorsList.find((item) => item.id === author).name;
-	// 	names.push(name);
-	// 	return names;
-	// }, []);
-
-	const courseAuthors = ['Some Author1', 'Some Author2'];
+	const courseAuthors = authors.reduce((names, author) => {
+		let name = authorsList.find((item) => item.id === author).name;
+		names.push(name);
+		return names;
+	}, []);
 
 	return courseAuthors;
 };

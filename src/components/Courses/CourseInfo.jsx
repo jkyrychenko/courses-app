@@ -3,28 +3,29 @@ import { useEffect, useState } from 'react';
 import mockedCoursesList from '../../data/mockedCoursesList';
 import formatDuration from '../../mixins/format-duration';
 import getAuthorsById from '../../mixins/get-authors';
-// import mockedAuthorsList from '../../data/mockedAuthorsList';
 
 const CourseInfo = () => {
 	const { courseId } = useParams();
 	const [course, setCourse] = useState({});
+	const [authors, setAuthors] = useState([]);
 
 	useEffect(() => {
 		const currentCourse = mockedCoursesList.find(
 			(course) => course.id === courseId
 		);
 		setCourse(currentCourse);
+		setAuthors(currentCourse.authors);
 	}, []);
 
 	return (
 		<div className='container'>
-			<div className='text-start'>
-				<Link to='/courses' className='btn btn-light'>
+			<div className='text-start mt-4'>
+				<Link to='/courses' className='link-dark text-decoration-none'>
 					&#8918; Back to courses
 				</Link>
 			</div>
-			<div className='row align-items-start p-4'>
-				<h2 className='text-center mb-5'>{course.title}</h2>
+			<h2 className='text-center mb-4 mt-4'>{course.title}</h2>
+			<div className='d-flex align-items-start pt-4 pb-4'>
 				<div className='col-8'>
 					<p>{course.description}</p>
 				</div>
@@ -39,9 +40,8 @@ const CourseInfo = () => {
 						<strong>Created:</strong> &nbsp; {course.creationDate}
 					</div>
 					<div>
-						{/* <strong>Authors:</strong> &nbsp; {authors.join(', ')} */}
 						<strong>Authors:</strong> &nbsp;{' '}
-						{getAuthorsById(course.authors).join(', ')}
+						{getAuthorsById(authors).join(', ')}
 					</div>
 				</div>
 			</div>
