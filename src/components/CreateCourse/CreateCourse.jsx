@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Input from '../Input/Input';
@@ -15,6 +15,7 @@ const CreateCourse = ({ authors, createCourse }) => {
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [duration, setDuration] = useState('');
+	let history = useHistory();
 
 	const addNewAuthor = (name) => {
 		if (!name.trim() || name.length < 2) {
@@ -69,6 +70,7 @@ const CreateCourse = ({ authors, createCourse }) => {
 
 		if (isFormValid({ title, description, duration })) {
 			createCourse({ newCourse, allAuthors });
+			history.push('/courses');
 		}
 	};
 

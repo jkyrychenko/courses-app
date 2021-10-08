@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CoursesList from '../Courses/CoursesList';
 import Search from '../Search/Search';
 import Message from '../Message/Message';
 
 const Courses = ({ courses, authors, createCourse }) => {
 	const [coursesList, setCourses] = useState(courses);
+	const [authorsList, setAuthors] = useState(authors);
 
 	const searchCourses = (query) => {
 		if (!query.trim()) {
@@ -21,6 +22,11 @@ const Courses = ({ courses, authors, createCourse }) => {
 		);
 		setCourses(filteredCourses);
 	};
+
+	useEffect(() => {
+		setCourses(courses);
+		setAuthors(authors);
+	}, [courses, authors]);
 
 	return (
 		<section className='mt-4 mb-4'>
@@ -39,8 +45,8 @@ const Courses = ({ courses, authors, createCourse }) => {
 						</Link>
 					</div>
 				</div>
-				{coursesList.length > 0 ? (
-					<CoursesList coursesList={coursesList} />
+				{coursesList?.length > 0 ? (
+					<CoursesList coursesList={coursesList} authorsList={authorsList} />
 				) : (
 					<Message text='No courses found. Please search or create one.' />
 				)}
