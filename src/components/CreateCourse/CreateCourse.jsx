@@ -1,6 +1,7 @@
 import { Link, useHistory } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+// import axios from 'axios';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
@@ -24,9 +25,20 @@ const CreateCourse = ({ authors, createCourse }) => {
 		}
 
 		let newAuthor = {
-			id: uuidv4(),
 			name: name,
+			// eslint-disable-next-line prettier/prettier
+			id: uuidv4()
 		};
+
+		console.log(newAuthor);
+
+		// axios
+		// 	.post('http://localhost:3000/authors/add', newAuthor)
+		// 	.then((response) => {
+		// 		// this.setState({ articleId: response.data.id })
+		// 		console.log(newAuthor);
+		// 		console.log(response);
+		// 	});
 
 		const updatedAuthorsList = [...authorslist, newAuthor];
 		setAuthorsList(updatedAuthorsList);
@@ -73,6 +85,10 @@ const CreateCourse = ({ authors, createCourse }) => {
 			history.push('/courses');
 		}
 	};
+
+	useEffect(() => {
+		setAllAuthors(authors);
+	}, [authors]);
 
 	return (
 		<section>
