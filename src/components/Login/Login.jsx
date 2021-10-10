@@ -1,15 +1,31 @@
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useState } from 'react';
+import axios from 'axios';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 
-const Login = () => {
+const Login = ({ handleLogin }) => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	let history = useHistory();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log(email, password);
+
+		const user = {
+			email,
+			password,
+		};
+
+		axios.post('http://localhost:3000/login', user).then((response) => {
+			if (response.status >= 200) {
+				localStorage.setItem('userToken', response.data.result);
+				handleLogin();
+				history.push('/courses');
+			} else {
+				console.log(response);
+			}
+		});
 	};
 
 	return (
