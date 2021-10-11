@@ -3,13 +3,15 @@ import { Link, useLocation } from 'react-router-dom';
 import Logo from '../Logo/Logo';
 import Button from '../Button/Button';
 
-const Header = ({ isLoggedIn, handleLogout }) => {
+const Header = ({ isLoggedIn, user, handleLogout }) => {
 	const currentLocation = useLocation().pathname;
 	const [authorized, setAuthorized] = useState(isLoggedIn);
+	const [userName, setUserName] = useState(user);
 
 	useEffect(() => {
 		setAuthorized(isLoggedIn);
-	}, [isLoggedIn]);
+		setUserName(user);
+	}, [isLoggedIn, user]);
 
 	return (
 		<header className='border-bottom bg-light'>
@@ -20,7 +22,7 @@ const Header = ({ isLoggedIn, handleLogout }) => {
 						<div className='d-flex flex-row align-items-center'>
 							{authorized ? (
 								<>
-									<div className='me-4'>Yuliia</div>
+									<div className='me-4'>{userName}</div>
 									<Button title='Logout' handleClick={handleLogout} />
 								</>
 							) : (

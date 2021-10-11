@@ -1,7 +1,7 @@
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-// import axios from 'axios';
+import axios from 'axios';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
@@ -16,7 +16,6 @@ const CreateCourse = ({ authors, createCourse }) => {
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [duration, setDuration] = useState('');
-	let history = useHistory();
 
 	const addNewAuthor = (name) => {
 		if (!name.trim() || name.length < 2) {
@@ -26,25 +25,23 @@ const CreateCourse = ({ authors, createCourse }) => {
 
 		let newAuthor = {
 			name: name,
-			// eslint-disable-next-line prettier/prettier
-			id: uuidv4()
+			id: uuidv4(),
 		};
 
-		console.log(newAuthor);
+		axios
+			.post('http://localhost:3000/authors/add', newAuthor, {
+				headers: {
+					Authorization: localStorage.getItem('userToken'),
+				},
+			})
+			.then((response) => {
+				window.location.reload();
+				// const updatedAuthorsList = [...authorslist, response.data.result];
+				// setAuthorsList(updatedAuthorsList);
 
-		// axios
-		// 	.post('http://localhost:3000/authors/add', newAuthor)
-		// 	.then((response) => {
-		// 		// this.setState({ articleId: response.data.id })
-		// 		console.log(newAuthor);
-		// 		console.log(response);
-		// 	});
-
-		const updatedAuthorsList = [...authorslist, newAuthor];
-		setAuthorsList(updatedAuthorsList);
-
-		const updatedAllAuthors = [...allAuthors, newAuthor];
-		setAllAuthors(updatedAllAuthors);
+				// const updatedAllAuthors = [...allAuthors, response.data.result];
+				// setAllAuthors(updatedAllAuthors);
+			});
 
 		setNewAuthorName('');
 	};
@@ -76,18 +73,26 @@ const CreateCourse = ({ authors, createCourse }) => {
 			title,
 			description,
 			creationDate: new Date().toLocaleDateString(),
-			duration,
+			duration: parseInt(duration),
 			authors: authorIdList,
 		};
 
 		if (isFormValid({ title, description, duration })) {
-			createCourse({ newCourse, allAuthors });
-			history.push('/courses');
+			axios
+				.post('http://localhost:3000/courses/add', newCourse, {
+					headers: {
+						Authorization: localStorage.getItem('userToken'),
+					},
+				})
+				.then(() => {
+					createCourse();
+				});
 		}
 	};
 
 	useEffect(() => {
 		setAllAuthors(authors);
+		setAuthorsList(authors);
 	}, [authors]);
 
 	return (
