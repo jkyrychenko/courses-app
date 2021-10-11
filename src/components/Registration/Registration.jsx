@@ -1,16 +1,33 @@
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 
 const Registration = () => {
+	let history = useHistory();
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log(email, password);
+
+		const user = {
+			name,
+			email,
+			password,
+			id: uuidv4(),
+		};
+
+		axios.post('http://localhost:3000/register', user).then((response) => {
+			if (response.status >= 200) {
+				history.push('/login');
+			} else {
+				console.log(response);
+			}
+		});
 	};
 
 	return (

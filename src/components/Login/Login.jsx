@@ -5,9 +5,9 @@ import Input from '../Input/Input';
 import Button from '../Button/Button';
 
 const Login = ({ handleLogin }) => {
+	let history = useHistory();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	let history = useHistory();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();

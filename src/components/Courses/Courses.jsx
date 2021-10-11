@@ -15,7 +15,7 @@ const Courses = ({ courses, authors, createCourse }) => {
 		}
 
 		let searchedQuery = query.toLowerCase();
-		let filteredCourses = coursesList.filter(
+		let filteredCourses = courses.filter(
 			(el) =>
 				el.id.toLowerCase().includes(searchedQuery) ||
 				el.title.toLowerCase().includes(searchedQuery)
