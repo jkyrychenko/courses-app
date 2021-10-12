@@ -14,9 +14,11 @@ import Login from './components/Login/Login';
 import Registration from './components/Registration/Registration';
 import CreateCourse from './components/CreateCourse/CreateCourse';
 import Error from './components/Error/Error';
+import PrivateRoute from './components/Router/PrivateRoute';
+import isTokenExist from './mixins/token';
 
 const App = () => {
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [isLoggedIn, setIsLoggedIn] = useState(isTokenExist);
 	const [userName, setUserName] = useState('');
 	const courses = useFetch('http://localhost:3000/courses/all').data;
 	const authors = useFetch('http://localhost:3000/authors/all').data;
@@ -44,7 +46,7 @@ const App = () => {
 		window.location.href = '/courses';
 	};
 	useEffect(() => {
-		if (localStorage.getItem('userToken') !== null) {
+		if (isTokenExist) {
 			setIsLoggedIn(true);
 			axios
 				.get('http://localhost:3000/users/me', {
@@ -66,32 +68,32 @@ const App = () => {
 				handleLogout={handleLogout}
 			/>
 			<Switch>
-				<Route path='/login'>
-					<Login handleLogin={handleLogin} />
-				</Route>
-				<Route path='/registration'>
-					<Registration />
-				</Route>
-				<Route exact path='/courses'>
-					<Courses courses={courses} authors={authors} />
-				</Route>
-				<Route path='/courses/add'>
-					<CreateCourse authors={authors} createCourse={createCourse} />
-				</Route>
 				<Route
+					path='/login'
+					component={() => <Login handleLogin={handleLogin} />}
+				></Route>
+				<Route path='/registration' component={Registration}></Route>
+				<PrivateRoute
+					exact
+					path='/courses'
+					component={() => <Courses courses={courses} authors={authors} />}
+				></PrivateRoute>
+				<PrivateRoute
+					path='/courses/add'
+					component={() => (
+						<CreateCourse authors={authors} createCourse={createCourse} />
+					)}
+				></PrivateRoute>
+				<PrivateRoute
 					path='/courses/:courseId'
 					children={<CourseInfo courses={courses} authors={authors} />}
-				></Route>
-				<Route exact path='/'>
-					{!isLoggedIn ? (
-						<Redirect from='*' to='/login' component={Login} />
-					) : (
-						<Redirect from='*' to='/courses' component={Courses} />
-					)}
-				</Route>
-				<Route path='*'>
-					<Error />
-				</Route>
+				></PrivateRoute>
+				<PrivateRoute
+					exact
+					path='/'
+					component={() => <Redirect to='/courses' />}
+				></PrivateRoute>
+				<PrivateRoute path='*' component={() => <Error />}></PrivateRoute>
 			</Switch>
 		</Router>
 	);
