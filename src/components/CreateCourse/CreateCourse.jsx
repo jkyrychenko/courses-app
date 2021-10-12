@@ -36,15 +36,18 @@ const CreateCourse = ({ authors, createCourse }) => {
 				},
 			})
 			.then((response) => {
-				window.location.reload();
-				// const updatedAuthorsList = [...authorslist, response.data.result];
-				// setAuthorsList(updatedAuthorsList);
-
-				// const updatedAllAuthors = [...allAuthors, response.data.result];
-				// setAllAuthors(updatedAllAuthors);
+				updateAuthors(response.data.result);
 			});
 
 		setNewAuthorName('');
+	};
+
+	const updateAuthors = (author) => {
+		const updatedAuthorsList = [...authorslist, author];
+		setAuthorsList(updatedAuthorsList);
+
+		const updatedAllAuthors = [...allAuthors, author];
+		setAllAuthors(updatedAllAuthors);
 	};
 
 	const addNewAuthorToCourse = (author) => {
