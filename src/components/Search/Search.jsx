@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
@@ -22,6 +23,10 @@ const Search = ({ handleSearch }) => {
 			</div>
 		</form>
 	);
+};
+
+Search.propTypes = {
+	handleSearch: PropTypes.func,
 };
 
 export default Search;

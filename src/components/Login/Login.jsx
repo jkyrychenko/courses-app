@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Link, useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
@@ -62,6 +63,10 @@ const Login = ({ handleLogin }) => {
 			</div>
 		</div>
 	);
+};
+
+Login.propTypes = {
+	handleLogin: PropTypes.func,
 };
 
 export default Login;

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from '../Logo/Logo';
@@ -36,6 +37,12 @@ const Header = ({ isLoggedIn, user, handleLogout }) => {
 			</div>
 		</header>
 	);
+};
+
+Header.propTypes = {
+	isLoggedIn: PropTypes.bool.isRequired,
+	user: PropTypes.string,
+	handleLogout: PropTypes.func,
 };
 
 export default Header;
