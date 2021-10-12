@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import formatDuration from '../../mixins/format-duration';
 
@@ -26,6 +27,11 @@ const CourseCard = ({ course, authors }) => {
 			</div>
 		</article>
 	);
+};
+
+CourseCard.propTypes = {
+	course: PropTypes.object,
+	authors: PropTypes.array,
 };
 
 export default CourseCard;

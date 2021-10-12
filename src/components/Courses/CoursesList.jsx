@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import CourseCard from './CourseCard';
 import getAuthorsById from '../../mixins/get-authors';
 
@@ -13,6 +14,11 @@ const CoursesList = ({ coursesList, authorsList }) => {
 			))}
 		</div>
 	);
+};
+
+CoursesList.propTypes = {
+	coursesList: PropTypes.array,
+	authorsList: PropTypes.array,
 };
 
 export default CoursesList;

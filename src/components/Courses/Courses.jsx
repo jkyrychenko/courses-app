@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import CoursesList from '../Courses/CoursesList';
@@ -53,6 +54,12 @@ const Courses = ({ courses, authors, createCourse }) => {
 			</div>
 		</section>
 	);
+};
+
+Courses.propTypes = {
+	courses: PropTypes.array,
+	authors: PropTypes.array,
+	createCourse: PropTypes.func,
 };
 
 export default Courses;
