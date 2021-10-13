@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
-const Message = ({ text }) => {
-	return <div className='alert'>{text}</div>;
+const Message = ({ text, type = 'light' }) => {
+	return <div className={`mt-4 alert alert-${type}`}>{text}</div>;
 };
 
 Message.propTypes = {

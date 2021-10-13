@@ -1,5 +1,5 @@
 const getAuthorsById = (authors, authorsList) => {
-	if (!authors || authorsList.length < 1) {
+	if (!authors || !authorsList.length) {
 		return [];
 	}
 

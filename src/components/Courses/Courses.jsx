@@ -5,7 +5,8 @@ import CoursesList from '../Courses/CoursesList';
 import Search from '../Search/Search';
 import Message from '../Message/Message';
 
-const Courses = ({ courses, authors, createCourse }) => {
+const Courses = ({ courses, authors, loading }) => {
+	const [isLoading, setIsLoading] = useState(true);
 	const [coursesList, setCourses] = useState(courses);
 	const [authorsList, setAuthors] = useState(authors);
 
@@ -25,9 +26,10 @@ const Courses = ({ courses, authors, createCourse }) => {
 	};
 
 	useEffect(() => {
+		setIsLoading(loading);
 		setCourses(courses);
 		setAuthors(authors);
-	}, [courses, authors]);
+	}, [loading, courses, authors]);
 
 	return (
 		<section className='mt-4 mb-4'>
@@ -37,20 +39,23 @@ const Courses = ({ courses, authors, createCourse }) => {
 						<Search handleSearch={searchCourses} />
 					</div>
 					<div className='col text-end'>
-						<Link
-							to='/courses/add'
-							onClick={createCourse}
-							className='btn btn-info'
-						>
+						<Link to='/courses/add' className='btn btn-info'>
 							Add new course
 						</Link>
 					</div>
 				</div>
-				{coursesList?.length > 0 ? (
-					<CoursesList coursesList={coursesList} authorsList={authorsList} />
-				) : (
-					<Message text='No courses found. Please search or create one.' />
-				)}
+				{isLoading
+					? 'Loading...'
+					: [
+							coursesList?.length > 0 ? (
+								<CoursesList
+									coursesList={coursesList}
+									authorsList={authorsList}
+								/>
+							) : (
+								<Message text='No courses found. Please search or create one.' />
+							),
+					  ]}
 			</div>
 		</section>
 	);
@@ -59,7 +64,6 @@ const Courses = ({ courses, authors, createCourse }) => {
 Courses.propTypes = {
 	courses: PropTypes.array,
 	authors: PropTypes.array,
-	createCourse: PropTypes.func,
 };
 
 export default Courses;

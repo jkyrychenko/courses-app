@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import Message from '../Message/Message';
 import formatDuration from '../../mixins/format-duration';
 import getAuthorsById from '../../mixins/get-authors';
 
@@ -17,7 +18,9 @@ const CourseInfo = ({ courses, authors }) => {
 
 		const choosenCourse = allCourses.find((course) => course.id === courseId);
 		setCurrentCourse(choosenCourse);
-		setCurrentAuthors(choosenCourse.authors);
+		if (choosenCourse) {
+			setCurrentAuthors(choosenCourse.authors);
+		}
 	}, [courses, authors]);
 
 	return (
@@ -27,28 +30,35 @@ const CourseInfo = ({ courses, authors }) => {
 					&#8918; Back to courses
 				</Link>
 			</div>
-			<h2 className='text-center mb-4 mt-4'>{currentCourse.title}</h2>
-			<div className='d-flex align-items-start pt-4 pb-4'>
-				<div className='col-8'>
-					<p>{currentCourse.description}</p>
+			{currentCourse ? (
+				<div>
+					<h2 className='text-center mb-4 mt-4'>{currentCourse.title}</h2>
+					<div className='d-flex align-items-start pt-4 pb-4'>
+						<div className='col-8'>
+							<p>{currentCourse.description}</p>
+						</div>
+						<div className='col-4'>
+							<div>
+								<strong>ID:</strong> &nbsp; {currentCourse.id}
+							</div>
+							<div>
+								<strong>Duration:</strong> &nbsp;{' '}
+								{formatDuration(currentCourse.duration)}
+							</div>
+							<div>
+								<strong>Created:</strong> &nbsp; {currentCourse.creationDate}
+							</div>
+							<div>
+								<strong>Authors:</strong> &nbsp;{' '}
+								{authors &&
+									getAuthorsById(currentAuthors, allAuthors).join(', ')}
+							</div>
+						</div>
+					</div>
 				</div>
-				<div className='col-4'>
-					<div>
-						<strong>ID:</strong> &nbsp; {currentCourse.id}
-					</div>
-					<div>
-						<strong>Duration:</strong> &nbsp;{' '}
-						{formatDuration(currentCourse.duration)}
-					</div>
-					<div>
-						<strong>Created:</strong> &nbsp; {currentCourse.creationDate}
-					</div>
-					<div>
-						<strong>Authors:</strong> &nbsp;{' '}
-						{authors && getAuthorsById(currentAuthors, allAuthors).join(', ')}
-					</div>
-				</div>
-			</div>
+			) : (
+				<Message text='There is no course with provided ID.' />
+			)}
 		</div>
 	);
 };
