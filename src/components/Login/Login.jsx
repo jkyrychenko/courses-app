@@ -4,11 +4,13 @@ import { useState } from 'react';
 import axios from 'axios';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
+import Message from '../Message/Message';
 
 const Login = ({ handleLogin }) => {
-	let history = useHistory();
+	const history = useHistory();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [loginError, setLoginError] = useState(false);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -18,19 +20,24 @@ const Login = ({ handleLogin }) => {
 			password,
 		};
 
-		axios.post('http://localhost:3000/login', user).then((response) => {
-			if (response.status >= 200) {
-				localStorage.setItem('userToken', response.data.result);
-				handleLogin();
-				history.push('/courses');
-			} else {
-				console.log(response);
-			}
-		});
+		axios
+			.post('http://localhost:3000/login', user)
+			.then((response) => {
+				if (response.data.successful) {
+					localStorage.setItem('userToken', response.data.result);
+					handleLogin();
+					history.push('/courses');
+				}
+			})
+			.catch((error) => {
+				console.log(error.response.data);
+				setLoginError(true);
+			});
 	};
 
 	return (
 		<div className='container'>
+			{loginError && <Message text='Entered data is invalid.' type='danger' />}
 			<div className='w-50 mx-auto mt-5'>
 				<h2 className='text-center mb-5'>Login</h2>
 				<form onSubmit={handleSubmit}>

@@ -1,13 +1,19 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import Logo from '../Logo/Logo';
 import Button from '../Button/Button';
 
 const Header = ({ isLoggedIn, user, handleLogout }) => {
+	const router = useHistory();
 	const currentLocation = useLocation().pathname;
 	const [authorized, setAuthorized] = useState(isLoggedIn);
 	const [userName, setUserName] = useState(user);
+
+	const handleLogoutBtn = () => {
+		handleLogout();
+		router.push('/login');
+	};
 
 	useEffect(() => {
 		setAuthorized(isLoggedIn);
@@ -24,7 +30,7 @@ const Header = ({ isLoggedIn, user, handleLogout }) => {
 							{authorized ? (
 								<>
 									<div className='me-4'>{userName}</div>
-									<Button title='Logout' handleClick={handleLogout} />
+									<Button title='Logout' handleClick={handleLogoutBtn} />
 								</>
 							) : (
 								<Link to='/login' className='btn btn-info'>

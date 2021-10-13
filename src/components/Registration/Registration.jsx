@@ -4,12 +4,14 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
+import Message from '../Message/Message';
 
 const Registration = () => {
 	let history = useHistory();
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [registrationError, setRegistrationError] = useState(false);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -21,17 +23,27 @@ const Registration = () => {
 			id: uuidv4(),
 		};
 
-		axios.post('http://localhost:3000/register', user).then((response) => {
-			if (response.status >= 200) {
-				history.push('/login');
-			} else {
-				console.log(response);
-			}
-		});
+		axios
+			.post('http://localhost:3000/register', user)
+			.then((response) => {
+				if (response.data.successful) {
+					history.push('/login');
+				}
+			})
+			.catch((error) => {
+				console.log(error.response.data);
+				setRegistrationError(true);
+			});
 	};
 
 	return (
 		<div className='container'>
+			{registrationError && (
+				<Message
+					text='Ooops! Something went wrong! Please, try again later.'
+					type='danger'
+				/>
+			)}
 			<div className='w-50 mx-auto mt-5'>
 				<h2 className='text-center mb-5'>Registration</h2>
 				<form onSubmit={handleSubmit}>

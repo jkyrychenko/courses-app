@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
@@ -9,7 +9,8 @@ import Message from '../Message/Message';
 import formatDuration from '../../mixins/format-duration';
 import isFormValid from '../../mixins/form-validation';
 
-const CreateCourse = ({ authors, createCourse }) => {
+const CreateCourse = ({ authors }) => {
+	const router = useHistory();
 	const [allAuthors, setAllAuthors] = useState(authors);
 	const [authorslist, setAuthorsList] = useState(authors);
 	const [newAuthorName, setNewAuthorName] = useState('');
@@ -88,8 +89,9 @@ const CreateCourse = ({ authors, createCourse }) => {
 						Authorization: localStorage.getItem('userToken'),
 					},
 				})
-				.then(() => {
-					createCourse();
+				.then((response) => {
+					console.log(response.data.result);
+					router.push('/courses');
 				});
 		}
 	};
@@ -222,7 +224,6 @@ const CreateCourse = ({ authors, createCourse }) => {
 };
 
 CreateCourse.propTypes = {
-	createCourse: PropTypes.func,
 	authors: PropTypes.array,
 };
 

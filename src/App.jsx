@@ -20,7 +20,7 @@ import isTokenExist from './mixins/token';
 const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(isTokenExist);
 	const [userName, setUserName] = useState('');
-	const courses = useFetch('http://localhost:3000/courses/all').data;
+	const { loading, data } = useFetch('http://localhost:3000/courses/all');
 	const authors = useFetch('http://localhost:3000/authors/all').data;
 
 	const handleLogout = () => {
@@ -34,7 +34,6 @@ const App = () => {
 				localStorage.removeItem('userToken');
 				setIsLoggedIn(false);
 				setUserName('');
-				window.location.href = '/login';
 			});
 	};
 
@@ -42,9 +41,6 @@ const App = () => {
 		setIsLoggedIn(true);
 	};
 
-	const createCourse = () => {
-		window.location.href = '/courses';
-	};
 	useEffect(() => {
 		if (isTokenExist) {
 			setIsLoggedIn(true);
@@ -76,17 +72,17 @@ const App = () => {
 				<PrivateRoute
 					exact
 					path='/courses'
-					component={() => <Courses courses={courses} authors={authors} />}
-				></PrivateRoute>
-				<PrivateRoute
-					path='/courses/add'
 					component={() => (
-						<CreateCourse authors={authors} createCourse={createCourse} />
+						<Courses loading={loading} courses={data} authors={authors} />
 					)}
 				></PrivateRoute>
 				<PrivateRoute
+					path='/courses/add'
+					component={() => <CreateCourse authors={authors} />}
+				></PrivateRoute>
+				<PrivateRoute
 					path='/courses/:courseId'
-					children={<CourseInfo courses={courses} authors={authors} />}
+					children={<CourseInfo courses={data} authors={authors} />}
 				></PrivateRoute>
 				<PrivateRoute
 					exact

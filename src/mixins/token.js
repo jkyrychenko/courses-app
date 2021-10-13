@@ -1,9 +1,3 @@
-const isTokenExist = () => {
-	if (localStorage.getItem('userToken') !== null) {
-		return true;
-	} else {
-		return false;
-	}
-};
+const isTokenExist = () => Boolean(localStorage.getItem('userToken'));
 
 export default isTokenExist;
