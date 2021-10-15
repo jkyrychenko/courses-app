@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
 import { Link, useHistory } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import Input from '../Input/Input';
@@ -8,11 +8,14 @@ import Button from '../Button/Button';
 import Message from '../Message/Message';
 import formatDuration from '../../mixins/format-duration';
 import isFormValid from '../../mixins/form-validation';
+import { addAuthor } from '../../store/authors/actionCreators';
+import { addCourse } from '../../store/courses/actionCreators';
 
-const CreateCourse = ({ authors }) => {
+const CreateCourse = () => {
 	const router = useHistory();
-	const [allAuthors, setAllAuthors] = useState(authors);
-	const [authorslist, setAuthorsList] = useState(authors);
+	const dispatch = useDispatch();
+	const allAuthors = useSelector((state) => state.allAuthors.authors);
+	const [authorslist, setAuthorsList] = useState(allAuthors);
 	const [newAuthorName, setNewAuthorName] = useState('');
 	const [courseAuthors, setCourseAuthors] = useState([]);
 	const [title, setTitle] = useState('');
@@ -46,9 +49,7 @@ const CreateCourse = ({ authors }) => {
 	const updateAuthors = (author) => {
 		const updatedAuthorsList = [...authorslist, author];
 		setAuthorsList(updatedAuthorsList);
-
-		const updatedAllAuthors = [...allAuthors, author];
-		setAllAuthors(updatedAllAuthors);
+		dispatch(addAuthor(author));
 	};
 
 	const addNewAuthorToCourse = (author) => {
@@ -90,16 +91,11 @@ const CreateCourse = ({ authors }) => {
 					},
 				})
 				.then((response) => {
-					console.log(response.data.result);
+					dispatch(addCourse(response.data.result));
 					router.push('/courses');
 				});
 		}
 	};
-
-	useEffect(() => {
-		setAllAuthors(authors);
-		setAuthorsList(authors);
-	}, [authors]);
 
 	return (
 		<section>
@@ -221,10 +217,6 @@ const CreateCourse = ({ authors }) => {
 			</div>
 		</section>
 	);
-};
-
-CreateCourse.propTypes = {
-	authors: PropTypes.array,
 };
 
 export default CreateCourse;

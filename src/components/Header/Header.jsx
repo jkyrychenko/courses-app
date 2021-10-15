@@ -1,24 +1,32 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Link, useLocation, useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logoutUser } from '../../store/user/actionCreators';
 import Logo from '../Logo/Logo';
 import Button from '../Button/Button';
 
-const Header = ({ isLoggedIn, user, handleLogout }) => {
+const Header = ({ handleLogout }) => {
 	const router = useHistory();
+	const dispatch = useDispatch();
 	const currentLocation = useLocation().pathname;
-	const [authorized, setAuthorized] = useState(isLoggedIn);
-	const [userName, setUserName] = useState(user);
+	const userName = useSelector((state) => state.user.name);
+	const isAuth = useSelector((state) => state.user.isAuth);
 
 	const handleLogoutBtn = () => {
-		handleLogout();
-		router.push('/login');
+		axios
+			.delete('http://localhost:3000/logout', {
+				headers: {
+					Authorization: localStorage.getItem('userToken'),
+				},
+			})
+			.then(() => {
+				localStorage.removeItem('userToken');
+				dispatch(logoutUser());
+				handleLogout();
+				router.push('/login');
+			});
 	};
-
-	useEffect(() => {
-		setAuthorized(isLoggedIn);
-		setUserName(user);
-	}, [isLoggedIn, user]);
 
 	return (
 		<header className='border-bottom bg-light'>
@@ -27,7 +35,7 @@ const Header = ({ isLoggedIn, user, handleLogout }) => {
 					<Logo />
 					{currentLocation !== ('/login' || '/registration') && (
 						<div className='d-flex flex-row align-items-center'>
-							{authorized ? (
+							{isAuth ? (
 								<>
 									<div className='me-4'>{userName}</div>
 									<Button title='Logout' handleClick={handleLogoutBtn} />
@@ -46,8 +54,6 @@ const Header = ({ isLoggedIn, user, handleLogout }) => {
 };
 
 Header.propTypes = {
-	isLoggedIn: PropTypes.bool.isRequired,
-	user: PropTypes.string,
 	handleLogout: PropTypes.func,
 };
 

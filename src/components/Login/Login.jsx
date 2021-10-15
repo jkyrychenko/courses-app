@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { Link, useHistory } from 'react-router-dom';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { loginUser } from '../../store/user/actionCreators';
 import axios from 'axios';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
@@ -8,6 +10,7 @@ import Message from '../Message/Message';
 
 const Login = ({ handleLogin }) => {
 	const history = useHistory();
+	const dispatch = useDispatch();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loginError, setLoginError] = useState(false);
@@ -24,6 +27,13 @@ const Login = ({ handleLogin }) => {
 			.post('http://localhost:3000/login', user)
 			.then((response) => {
 				if (response.data.successful) {
+					dispatch(
+						loginUser({
+							name: response.data.user.name,
+							email: response.data.user.email,
+							token: response.data.result,
+						})
+					);
 					localStorage.setItem('userToken', response.data.result);
 					handleLogin();
 					history.push('/courses');

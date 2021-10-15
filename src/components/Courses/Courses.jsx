@@ -1,23 +1,24 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import CoursesList from '../Courses/CoursesList';
 import Search from '../Search/Search';
 import Message from '../Message/Message';
 
-const Courses = ({ courses, authors, loading }) => {
-	const [isLoading, setIsLoading] = useState(true);
-	const [coursesList, setCourses] = useState(courses);
-	const [authorsList, setAuthors] = useState(authors);
+const Courses = ({ isLoading }) => {
+	const [loading, setLoading] = useState(true);
+	const authorsList = useSelector((state) => state.allAuthors.authors);
+	const coursesList = useSelector((state) => state.allCourses.courses);
+	const [courses, setCourses] = useState(coursesList);
 
 	const searchCourses = (query) => {
 		if (!query.trim()) {
-			setCourses(courses);
+			setCourses(coursesList);
 			return;
 		}
-
 		let searchedQuery = query.toLowerCase();
-		let filteredCourses = courses.filter(
+		let filteredCourses = coursesList.filter(
 			(el) =>
 				el.id.toLowerCase().includes(searchedQuery) ||
 				el.title.toLowerCase().includes(searchedQuery)
@@ -26,10 +27,11 @@ const Courses = ({ courses, authors, loading }) => {
 	};
 
 	useEffect(() => {
-		setIsLoading(loading);
-		setCourses(courses);
-		setAuthors(authors);
-	}, [loading, courses, authors]);
+		setLoading(isLoading);
+		setCourses(coursesList);
+	}, [isLoading, coursesList]);
+
+	console.log();
 
 	return (
 		<section className='mt-4 mb-4'>
@@ -44,14 +46,11 @@ const Courses = ({ courses, authors, loading }) => {
 						</Link>
 					</div>
 				</div>
-				{isLoading
+				{loading
 					? 'Loading...'
 					: [
-							coursesList?.length > 0 ? (
-								<CoursesList
-									coursesList={coursesList}
-									authorsList={authorsList}
-								/>
+							courses?.length > 0 ? (
+								<CoursesList coursesList={courses} authorsList={authorsList} />
 							) : (
 								<Message text='No courses found. Please search or create one.' />
 							),
@@ -62,8 +61,7 @@ const Courses = ({ courses, authors, loading }) => {
 };
 
 Courses.propTypes = {
-	courses: PropTypes.array,
-	authors: PropTypes.array,
+	isLoading: PropTypes.bool,
 };
 
 export default Courses;

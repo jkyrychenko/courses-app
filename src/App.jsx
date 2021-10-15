@@ -6,6 +6,10 @@ import {
 } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useFetch } from './mixins/use-fetch';
+import { useDispatch } from 'react-redux';
+import { setAuthors } from './store/authors/actionCreators';
+import { setCourses } from './store/courses/actionCreators';
+import { loginUser } from './store/user/actionCreators';
 import axios from 'axios';
 import Header from './components/Header/Header';
 import Courses from './components/Courses/Courses';
@@ -18,23 +22,14 @@ import PrivateRoute from './components/Router/PrivateRoute';
 import isTokenExist from './mixins/token';
 
 const App = () => {
+	const dispatch = useDispatch();
 	const [isLoggedIn, setIsLoggedIn] = useState(isTokenExist);
-	const [userName, setUserName] = useState('');
-	const { loading, data } = useFetch('http://localhost:3000/courses/all');
-	const authors = useFetch('http://localhost:3000/authors/all').data;
+	const fetchedCourses = useFetch('http://localhost:3000/courses/all');
+	const fetchedAuthors = useFetch('http://localhost:3000/authors/all');
+	const [isLoading, setIsLoading] = useState(true);
 
 	const handleLogout = () => {
-		axios
-			.delete('http://localhost:3000/logout', {
-				headers: {
-					Authorization: localStorage.getItem('userToken'),
-				},
-			})
-			.then(() => {
-				localStorage.removeItem('userToken');
-				setIsLoggedIn(false);
-				setUserName('');
-			});
+		setIsLoggedIn(false);
 	};
 
 	const handleLogin = () => {
@@ -51,18 +46,31 @@ const App = () => {
 					},
 				})
 				.then((response) => {
-					setUserName(response.data.result.name);
+					dispatch(
+						loginUser({
+							name: response.data.result.name,
+							email: response.data.result.email,
+							token: localStorage.getItem('userToken'),
+						})
+					);
 				});
 		}
-	}, [isLoggedIn]);
+
+		dispatch(setAuthors(fetchedAuthors.data));
+		dispatch(setCourses(fetchedCourses.data));
+	}, [isLoggedIn, fetchedAuthors, fetchedCourses]);
+
+	useEffect(() => {
+		if (fetchedCourses.loading || fetchedAuthors.loading) {
+			setIsLoading(true);
+		}
+
+		setIsLoading(false);
+	}, [isLoading]);
 
 	return (
 		<Router>
-			<Header
-				isLoggedIn={isLoggedIn}
-				user={userName}
-				handleLogout={handleLogout}
-			/>
+			<Header handleLogout={handleLogout} />
 			<Switch>
 				<Route
 					path='/login'
@@ -72,17 +80,15 @@ const App = () => {
 				<PrivateRoute
 					exact
 					path='/courses'
-					component={() => (
-						<Courses loading={loading} courses={data} authors={authors} />
-					)}
+					component={() => <Courses isLoading={isLoading} />}
 				></PrivateRoute>
 				<PrivateRoute
 					path='/courses/add'
-					component={() => <CreateCourse authors={authors} />}
+					component={() => <CreateCourse />}
 				></PrivateRoute>
 				<PrivateRoute
 					path='/courses/:courseId'
-					children={<CourseInfo courses={data} authors={authors} />}
+					children={<CourseInfo />}
 				></PrivateRoute>
 				<PrivateRoute
 					exact
