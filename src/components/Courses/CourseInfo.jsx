@@ -1,27 +1,16 @@
-import PropTypes from 'prop-types';
 import { useParams, Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Message from '../Message/Message';
 import formatDuration from '../../mixins/format-duration';
 import getAuthorsById from '../../mixins/get-authors';
 
-const CourseInfo = ({ courses, authors }) => {
+const CourseInfo = () => {
 	const { courseId } = useParams();
-	const [allCourses, setCourses] = useState(courses);
-	const [allAuthors, setAuthors] = useState(authors);
-	const [currentCourse, setCurrentCourse] = useState({});
-	const [currentAuthors, setCurrentAuthors] = useState([]);
-
-	useEffect(() => {
-		setCourses(courses);
-		setAuthors(authors);
-
-		const choosenCourse = allCourses.find((course) => course.id === courseId);
-		setCurrentCourse(choosenCourse);
-		if (choosenCourse) {
-			setCurrentAuthors(choosenCourse.authors);
-		}
-	}, [courses, authors]);
+	const allAuthors = useSelector((state) => state.allAuthors.authors);
+	const currentCourse = useSelector((state) =>
+		state.allCourses.courses.find((course) => course.id === courseId)
+	);
+	const currentAuthors = currentCourse.authors;
 
 	return (
 		<div className='container'>
@@ -50,7 +39,7 @@ const CourseInfo = ({ courses, authors }) => {
 							</div>
 							<div>
 								<strong>Authors:</strong> &nbsp;{' '}
-								{authors &&
+								{currentAuthors &&
 									getAuthorsById(currentAuthors, allAuthors).join(', ')}
 							</div>
 						</div>
@@ -61,11 +50,6 @@ const CourseInfo = ({ courses, authors }) => {
 			)}
 		</div>
 	);
-};
-
-CourseInfo.propTypes = {
-	courses: PropTypes.array,
-	authors: PropTypes.array,
 };
 
 export default CourseInfo;
