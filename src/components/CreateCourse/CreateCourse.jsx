@@ -2,7 +2,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import axios from 'axios';
+import api from '../../lib/api/api';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
@@ -33,15 +33,9 @@ const CreateCourse = () => {
 			id: uuidv4(),
 		};
 
-		axios
-			.post('http://localhost:3000/authors/add', newAuthor, {
-				headers: {
-					Authorization: localStorage.getItem('userToken'),
-				},
-			})
-			.then((response) => {
-				updateAuthors(response.data.result);
-			});
+		api.addAuthor(newAuthor).then((response) => {
+			updateAuthors(response);
+		});
 
 		setNewAuthorName('');
 	};
@@ -84,16 +78,10 @@ const CreateCourse = () => {
 		};
 
 		if (isFormValid({ title, description, duration })) {
-			axios
-				.post('http://localhost:3000/courses/add', newCourse, {
-					headers: {
-						Authorization: localStorage.getItem('userToken'),
-					},
-				})
-				.then((response) => {
-					dispatch(addCourse(response.data.result));
-					router.push('/courses');
-				});
+			api.addCourse(newCourse).then((response) => {
+				dispatch(addCourse(response));
+				router.push('/courses');
+			});
 		}
 	};
 

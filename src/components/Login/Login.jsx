@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../../store/user/actionCreators';
-import axios from 'axios';
+import api from '../../lib/api/api';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
@@ -23,18 +23,18 @@ const Login = ({ handleLogin }) => {
 			password,
 		};
 
-		axios
-			.post('http://localhost:3000/login', user)
-			.then((response) => {
-				if (response.data.successful) {
+		api
+			.login(user)
+			.then((data) => {
+				if (data.successful) {
 					dispatch(
 						loginUser({
-							name: response.data.user.name,
-							email: response.data.user.email,
-							token: response.data.result,
+							name: data.user.name,
+							email: data.user.email,
+							token: data.result,
 						})
 					);
-					localStorage.setItem('userToken', response.data.result);
+					localStorage.setItem('userToken', data.result);
 					handleLogin();
 					history.push('/courses');
 				}

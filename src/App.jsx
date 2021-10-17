@@ -10,7 +10,6 @@ import { useDispatch } from 'react-redux';
 import { setAuthors } from './store/authors/actionCreators';
 import { setCourses } from './store/courses/actionCreators';
 import { loginUser } from './store/user/actionCreators';
-import axios from 'axios';
 import Header from './components/Header/Header';
 import Courses from './components/Courses/Courses';
 import CourseInfo from './components/Courses/CourseInfo';
@@ -19,6 +18,7 @@ import Registration from './components/Registration/Registration';
 import CreateCourse from './components/CreateCourse/CreateCourse';
 import Error from './components/Error/Error';
 import PrivateRoute from './components/Router/PrivateRoute';
+import api from './lib/api/api';
 import isTokenExist from './mixins/token';
 
 const App = () => {
@@ -39,21 +39,15 @@ const App = () => {
 	useEffect(() => {
 		if (isTokenExist) {
 			setIsLoggedIn(true);
-			axios
-				.get('http://localhost:3000/users/me', {
-					headers: {
-						Authorization: localStorage.getItem('userToken'),
-					},
-				})
-				.then((response) => {
-					dispatch(
-						loginUser({
-							name: response.data.result.name,
-							email: response.data.result.email,
-							token: localStorage.getItem('userToken'),
-						})
-					);
-				});
+			api.getUser().then((data) => {
+				dispatch(
+					loginUser({
+						name: data.result.name,
+						email: data.result.email,
+						token: localStorage.getItem('userToken'),
+					})
+				);
+			});
 		}
 
 		dispatch(setAuthors(fetchedAuthors.data));

@@ -1,26 +1,20 @@
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { deleteCourse } from '../../store/courses/actionCreators';
 import Button from '../Button/Button';
 import formatDuration from '../../mixins/format-duration';
+import api from '../../lib/api/api';
 
 const CourseCard = ({ course, authors }) => {
 	const dispatch = useDispatch();
 
 	const deleteCourseById = (id) => {
-		axios
-			.delete(`http://localhost:3000/courses/${id}`, {
-				headers: {
-					Authorization: localStorage.getItem('userToken'),
-				},
-			})
-			.then((response) => {
-				if (response.data.successful) {
-					dispatch(deleteCourse(id));
-				}
-			});
+		api.removeCourse(id).then((response) => {
+			if (response.data.successful) {
+				dispatch(deleteCourse(id));
+			}
+		});
 	};
 
 	return (
