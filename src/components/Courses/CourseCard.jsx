@@ -39,7 +39,7 @@ const CourseCard = ({ course, authors }) => {
 				<div>
 					<strong>Created:</strong> &nbsp; {course.creationDate}
 				</div>
-				<div className='text-center pt-3'>
+				<div className='pt-3'>
 					<Link to={`/courses/${course.id}`} className='btn btn-warning'>
 						Show course
 					</Link>
@@ -49,6 +49,7 @@ const CourseCard = ({ course, authors }) => {
 						title='&#128465;'
 						handleClick={() => deleteCourseById(course.id)}
 					/>
+					<Button color='success' customClass='ms-2' title='&#9998;' />
 				</div>
 			</div>
 		</article>
