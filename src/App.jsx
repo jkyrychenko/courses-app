@@ -65,7 +65,10 @@ const App = () => {
 			setIsLoading(true);
 		}
 
-		setIsLoading(false);
+		let loadingTimer = setTimeout(() => setIsLoading(false), 1000);
+		return () => {
+			clearTimeout(loadingTimer);
+		};
 	}, [isLoading]);
 
 	return (

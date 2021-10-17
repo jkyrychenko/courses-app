@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import Loader from '../Loader/Loader';
 import CoursesList from '../Courses/CoursesList';
 import Search from '../Search/Search';
 import Message from '../Message/Message';
@@ -46,15 +47,17 @@ const Courses = ({ isLoading }) => {
 						</Link>
 					</div>
 				</div>
-				{loading
-					? 'Loading...'
-					: [
-							courses?.length > 0 ? (
-								<CoursesList coursesList={courses} authorsList={authorsList} />
-							) : (
-								<Message text='No courses found. Please search or create one.' />
-							),
-					  ]}
+				{loading ? (
+					<Loader />
+				) : (
+					[
+						courses?.length > 0 ? (
+							<CoursesList coursesList={courses} authorsList={authorsList} />
+						) : (
+							<Message text='No courses found. Please search or create one.' />
+						),
+					]
+				)}
 			</div>
 		</section>
 	);
