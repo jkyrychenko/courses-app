@@ -1,7 +1,7 @@
 import { Link, useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import axios from 'axios';
+import api from '../../lib/api/api';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
@@ -23,10 +23,11 @@ const Registration = () => {
 			id: uuidv4(),
 		};
 
-		axios
-			.post('http://localhost:3000/register', user)
+		api
+			.register(user)
 			.then((response) => {
-				if (response.data.successful) {
+				console.log(response);
+				if (response.successful) {
 					history.push('/login');
 				}
 			})

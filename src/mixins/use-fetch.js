@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '../lib/api/api';
 import { useState, useEffect } from 'react';
 
 export const useFetch = (url) => {
@@ -6,7 +6,7 @@ export const useFetch = (url) => {
 	const [data, setData] = useState([]);
 
 	const getData = async () => {
-		const response = await axios(url);
+		const response = await api.getCoursesData(url);
 		setData(response.data.result);
 		setLoading(false);
 	};

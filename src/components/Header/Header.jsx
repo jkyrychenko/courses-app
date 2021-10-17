@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../../store/user/actionCreators';
+import api from '../../lib/api/api';
 import Logo from '../Logo/Logo';
 import Button from '../Button/Button';
 
@@ -14,18 +14,12 @@ const Header = ({ handleLogout }) => {
 	const isAuth = useSelector((state) => state.user.isAuth);
 
 	const handleLogoutBtn = () => {
-		axios
-			.delete('http://localhost:3000/logout', {
-				headers: {
-					Authorization: localStorage.getItem('userToken'),
-				},
-			})
-			.then(() => {
-				localStorage.removeItem('userToken');
-				dispatch(logoutUser());
-				handleLogout();
-				router.push('/login');
-			});
+		api.logout().then(() => {
+			localStorage.removeItem('userToken');
+			dispatch(logoutUser());
+			handleLogout();
+			router.push('/login');
+		});
 	};
 
 	return (
