@@ -5,6 +5,7 @@ const userInitialState = {
 	name: '',
 	email: '',
 	token: '',
+	role: '',
 };
 
 const courses = (state = userInitialState, { type, payload }) => {
@@ -16,6 +17,7 @@ const courses = (state = userInitialState, { type, payload }) => {
 				name: payload.name,
 				email: payload.email,
 				token: payload.token,
+				role: payload.role,
 			};
 		case actionTypes.LOGOUT_USER:
 			return userInitialState;

@@ -1,5 +1,5 @@
-import { Link, useHistory } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import api from '../../lib/api/api';
@@ -11,16 +11,35 @@ import isFormValid from '../../mixins/form-validation';
 import { addAuthor } from '../../store/authors/actionCreators';
 import { addCourse } from '../../store/courses/actionCreators';
 
-const CreateCourse = () => {
+const CourseForm = () => {
 	const router = useHistory();
+	const { courseId } = useParams();
 	const dispatch = useDispatch();
+	const currentCourse = useSelector((state) =>
+		state.allCourses.courses.find((course) => course.id === courseId)
+	);
 	const allAuthors = useSelector((state) => state.allAuthors.authors);
 	const [authorslist, setAuthorsList] = useState(allAuthors);
 	const [newAuthorName, setNewAuthorName] = useState('');
 	const [courseAuthors, setCourseAuthors] = useState([]);
-	const [title, setTitle] = useState('');
-	const [description, setDescription] = useState('');
-	const [duration, setDuration] = useState('');
+	const [title, setTitle] = useState(currentCourse ? currentCourse.title : '');
+	const [description, setDescription] = useState(
+		currentCourse ? currentCourse.description : ''
+	);
+	const [duration, setDuration] = useState(
+		currentCourse ? currentCourse.duration : ''
+	);
+
+	const getCurrentCourseAuthors = () => {
+		if (currentCourse) {
+			const authors = currentCourse.authors;
+
+			authors.forEach((author) => {
+				let name = allAuthors.find((item) => item.id === author);
+				addNewAuthorToCourse(name);
+			});
+		}
+	};
 
 	const addNewAuthor = (name) => {
 		if (!name.trim() || name.length < 2) {
@@ -85,6 +104,10 @@ const CreateCourse = () => {
 		}
 	};
 
+	useEffect(() => {
+		getCurrentCourseAuthors();
+	}, [currentCourse]);
+
 	return (
 		<section>
 			<div className='container mt-4 mb-4'>
@@ -101,7 +124,7 @@ const CreateCourse = () => {
 						</div>
 						<div className='col-6 text-end'>
 							<Button
-								title='Create course'
+								title={currentCourse ? 'Update course' : 'Create course'}
 								color='warning'
 								customClass='me-4'
 								type='submit'
@@ -207,4 +230,4 @@ const CreateCourse = () => {
 	);
 };
 
-export default CreateCourse;
+export default CourseForm;

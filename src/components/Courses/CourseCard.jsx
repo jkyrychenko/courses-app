@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteCourse } from '../../store/courses/actionCreators';
 import Button from '../Button/Button';
 import formatDuration from '../../mixins/format-duration';
@@ -8,6 +8,7 @@ import api from '../../lib/api/api';
 
 const CourseCard = ({ course, authors }) => {
 	const dispatch = useDispatch();
+	const isAdmin = useSelector((state) => state.user.role) === 'admin';
 
 	const deleteCourseById = (id) => {
 		api.removeCourse(id).then((response) => {
@@ -37,13 +38,22 @@ const CourseCard = ({ course, authors }) => {
 					<Link to={`/courses/${course.id}`} className='btn btn-warning'>
 						Show course
 					</Link>
-					<Button
-						color='danger'
-						customClass='ms-2'
-						title='&#128465;'
-						handleClick={() => deleteCourseById(course.id)}
-					/>
-					<Button color='success' customClass='ms-2' title='&#9998;' />
+					{isAdmin && (
+						<>
+							<Button
+								color='danger'
+								customClass='ms-2'
+								title='&#128465;'
+								handleClick={() => deleteCourseById(course.id)}
+							/>
+							<Link
+								to={`/courses/update/${course.id}`}
+								className='btn btn-success ms-2'
+							>
+								&#9998;
+							</Link>
+						</>
+					)}
 				</div>
 			</div>
 		</article>
