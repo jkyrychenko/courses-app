@@ -1,4 +1,5 @@
 import { actionTypes } from './actionTypes';
+import api from '../../lib/api/api';
 
 export const loginUser = (user) => {
 	return {
@@ -12,4 +13,10 @@ export const logoutUser = (user) => {
 		type: actionTypes.LOGOUT_USER,
 		payload: user,
 	};
+};
+
+export const getUser = () => async (dispatch) => {
+	let response = await api.getUser();
+	let user = response.result;
+	dispatch({ type: actionTypes.GET_USER, payload: user });
 };

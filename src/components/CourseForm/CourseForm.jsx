@@ -1,8 +1,6 @@
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
-import api from '../../lib/api/api';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
@@ -49,20 +47,11 @@ const CourseForm = () => {
 
 		let newAuthor = {
 			name: name,
-			id: uuidv4(),
 		};
 
-		api.addAuthor(newAuthor).then((response) => {
-			updateAuthors(response);
-		});
+		dispatch(addAuthor(newAuthor));
 
 		setNewAuthorName('');
-	};
-
-	const updateAuthors = (author) => {
-		const updatedAuthorsList = [...authorslist, author];
-		setAuthorsList(updatedAuthorsList);
-		dispatch(addAuthor(author));
 	};
 
 	const addNewAuthorToCourse = (author) => {
@@ -88,7 +77,6 @@ const CourseForm = () => {
 		}, []);
 
 		const newCourse = {
-			id: uuidv4(),
 			title,
 			description,
 			creationDate: new Date().toLocaleDateString(),
@@ -97,16 +85,18 @@ const CourseForm = () => {
 		};
 
 		if (isFormValid({ title, description, duration })) {
-			api.addCourse(newCourse).then((response) => {
-				dispatch(addCourse(response));
-				router.push('/courses');
-			});
+			dispatch(addCourse(newCourse));
+			router.push('/courses');
 		}
 	};
 
 	useEffect(() => {
 		getCurrentCourseAuthors();
 	}, [currentCourse]);
+
+	useEffect(() => {
+		setAuthorsList(allAuthors);
+	}, [allAuthors]);
 
 	return (
 		<section>

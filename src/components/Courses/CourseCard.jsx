@@ -4,18 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deleteCourse } from '../../store/courses/actionCreators';
 import Button from '../Button/Button';
 import formatDuration from '../../mixins/format-duration';
-import api from '../../lib/api/api';
 
 const CourseCard = ({ course, authors }) => {
 	const dispatch = useDispatch();
 	const isAdmin = useSelector((state) => state.user.role) === 'admin';
 
 	const deleteCourseById = (id) => {
-		api.removeCourse(id).then((response) => {
-			if (response.data.successful) {
-				dispatch(deleteCourse(id));
-			}
-		});
+		dispatch(deleteCourse(id));
 	};
 
 	return (
