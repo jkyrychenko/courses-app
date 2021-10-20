@@ -17,10 +17,18 @@ const coursesReduser = (state = userInitialState, { type, payload }) => {
 				name: payload.name,
 				email: payload.email,
 				token: payload.token,
-				role: payload.role,
 			};
 		case actionTypes.LOGOUT_USER:
 			return userInitialState;
+		case actionTypes.GET_USER:
+			return {
+				...state,
+				isAuth: true,
+				name: payload.name,
+				email: payload.email,
+				token: localStorage.getItem('userToken'),
+				role: payload.role,
+			};
 		default:
 			return state;
 	}

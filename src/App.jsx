@@ -9,7 +9,7 @@ import { useFetch } from './mixins/use-fetch';
 import { useDispatch } from 'react-redux';
 import { setAuthors } from './store/authors/actionCreators';
 import { setCourses } from './store/courses/actionCreators';
-import { loginUser } from './store/user/actionCreators';
+import { getUser } from './store/user/actionCreators';
 import Header from './components/Header/Header';
 import Courses from './components/Courses/Courses';
 import CourseInfo from './components/Courses/CourseInfo';
@@ -19,7 +19,6 @@ import CourseForm from './components/CourseForm/CourseForm';
 import Error from './components/Error/Error';
 import PrivateRoute from './components/Router/PrivateRoute';
 import AdminRoute from './components/Router/AdminRoute';
-import api from './lib/api/api';
 import isTokenExist from './mixins/token';
 
 const App = () => {
@@ -40,16 +39,7 @@ const App = () => {
 	useEffect(() => {
 		if (isTokenExist()) {
 			setIsLoggedIn(true);
-			api.getUser().then((data) => {
-				dispatch(
-					loginUser({
-						name: data.result.name,
-						email: data.result.email,
-						token: localStorage.getItem('userToken'),
-						role: data.result.role,
-					})
-				);
-			});
+			dispatch(getUser());
 		}
 
 		dispatch(setAuthors(fetchedAuthors.data));
