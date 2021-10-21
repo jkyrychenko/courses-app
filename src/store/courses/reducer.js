@@ -10,6 +10,21 @@ const coursesReduser = (state = coursesInitialState, { type, payload }) => {
 			return { ...state, courses: payload };
 		case actionTypes.ADD_COURSE:
 			return { ...state, courses: [...state.courses, payload] };
+		case actionTypes.UPDATE_COURSE:
+			return {
+				...state,
+				courses: state.courses.map((course) =>
+					course.id === payload.id
+						? {
+								...course,
+								title: payload.title,
+								description: payload.description,
+								duration: payload.duration,
+								authors: payload.authors,
+						  }
+						: course
+				),
+			};
 		case actionTypes.DELETE_COURSE:
 			return {
 				...state,
