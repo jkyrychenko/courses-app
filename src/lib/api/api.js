@@ -97,6 +97,21 @@ const api = {
 		});
 	},
 
+	updateCourse: function (course, id) {
+		const endpoint = `http://localhost:3000/courses/${id}`;
+		const options = {
+			headers: {
+				Authorization: localStorage.getItem('userToken'),
+			},
+		};
+		return new Promise((resolve, reject) => {
+			axios
+				.put(endpoint, course, options)
+				.then((response) => resolve(response.data.result))
+				.catch((reason) => reject(reason));
+		});
+	},
+
 	removeCourse: function (id) {
 		const endpoint = `http://localhost:3000/courses/${id}`;
 		const options = {

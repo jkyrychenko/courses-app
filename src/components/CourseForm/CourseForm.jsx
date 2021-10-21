@@ -7,7 +7,7 @@ import Message from '../Message/Message';
 import formatDuration from '../../mixins/format-duration';
 import isFormValid from '../../mixins/form-validation';
 import { addAuthor } from '../../store/authors/actionCreators';
-import { addCourse } from '../../store/courses/actionCreators';
+import { addCourse, updateCourse } from '../../store/courses/actionCreators';
 
 const CourseForm = () => {
 	const router = useHistory();
@@ -20,24 +20,9 @@ const CourseForm = () => {
 	const [authorslist, setAuthorsList] = useState(allAuthors);
 	const [newAuthorName, setNewAuthorName] = useState('');
 	const [courseAuthors, setCourseAuthors] = useState([]);
-	const [title, setTitle] = useState(currentCourse ? currentCourse.title : '');
-	const [description, setDescription] = useState(
-		currentCourse ? currentCourse.description : ''
-	);
-	const [duration, setDuration] = useState(
-		currentCourse ? currentCourse.duration : ''
-	);
-
-	const getCurrentCourseAuthors = () => {
-		if (currentCourse) {
-			const authors = currentCourse.authors;
-
-			authors.forEach((author) => {
-				let name = allAuthors.find((item) => item.id === author);
-				addNewAuthorToCourse(name);
-			});
-		}
-	};
+	const [title, setTitle] = useState('');
+	const [description, setDescription] = useState('');
+	const [duration, setDuration] = useState('');
 
 	const addNewAuthor = (name) => {
 		if (!name.trim() || name.length < 2) {
@@ -68,7 +53,7 @@ const CourseForm = () => {
 		setAuthorsList(updatedAuthorsList);
 	};
 
-	const createNewCourse = (e) => {
+	const handleCourseSubmit = (e) => {
 		e.preventDefault();
 
 		const authorIdList = courseAuthors.reduce((ids, author) => {
@@ -76,7 +61,7 @@ const CourseForm = () => {
 			return ids;
 		}, []);
 
-		const newCourse = {
+		const courseToSubmit = {
 			title,
 			description,
 			creationDate: new Date().toLocaleDateString(),
@@ -85,14 +70,39 @@ const CourseForm = () => {
 		};
 
 		if (isFormValid({ title, description, duration })) {
-			dispatch(addCourse(newCourse));
+			if (courseId) {
+				dispatch(updateCourse(courseToSubmit, courseId));
+			} else {
+				dispatch(addCourse(courseToSubmit));
+			}
 			router.push('/courses');
+		}
+	};
+
+	const getCurrentCourseAuthors = () => {
+		if (currentCourse) {
+			const authors = currentCourse.authors;
+
+			authors.forEach((author) => {
+				let name = allAuthors.find((item) => item.id === author);
+				addNewAuthorToCourse(name);
+			});
+		}
+	};
+
+	const setCurrentCourseFields = () => {
+		if (currentCourse) {
+			setTitle(currentCourse.title);
+			setDescription(currentCourse.description);
+			setDuration(currentCourse.duration);
+			setTitle(currentCourse.title);
 		}
 	};
 
 	useEffect(() => {
 		getCurrentCourseAuthors();
-	}, [currentCourse]);
+		setCurrentCourseFields();
+	}, [courseId]);
 
 	useEffect(() => {
 		setAuthorsList(allAuthors);
@@ -101,7 +111,7 @@ const CourseForm = () => {
 	return (
 		<section>
 			<div className='container mt-4 mb-4'>
-				<form onSubmit={createNewCourse} className='d-grid gap-4'>
+				<form onSubmit={handleCourseSubmit} className='d-grid gap-4'>
 					<div className='d-flex align-items-end'>
 						<div className='col-6'>
 							<Input
