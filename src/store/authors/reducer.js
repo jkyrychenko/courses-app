@@ -4,7 +4,7 @@ const authorsInitialState = {
 	authors: [],
 };
 
-const authorsReduser = (state = authorsInitialState, { type, payload }) => {
+const authors = (state = authorsInitialState, { type, payload }) => {
 	switch (type) {
 		case actionTypes.SET_AUTHORS:
 			return { ...state, authors: payload };
@@ -15,4 +15,4 @@ const authorsReduser = (state = authorsInitialState, { type, payload }) => {
 	}
 };
 
-export default authorsReduser;
+export default authors;
