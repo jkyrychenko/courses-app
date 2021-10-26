@@ -1,19 +1,21 @@
-import { Link, useHistory } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
-import api from '../../lib/api/api';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
 import formatDuration from '../../mixins/format-duration';
 import isFormValid from '../../mixins/form-validation';
 import { addAuthor } from '../../store/authors/actionCreators';
-import { addCourse } from '../../store/courses/actionCreators';
+import { addCourse, updateCourse } from '../../store/courses/actionCreators';
 
-const CreateCourse = () => {
+const CourseForm = () => {
 	const router = useHistory();
+	const { courseId } = useParams();
 	const dispatch = useDispatch();
+	const currentCourse = useSelector((state) =>
+		state.allCourses.courses.find((course) => course.id === courseId)
+	);
 	const allAuthors = useSelector((state) => state.allAuthors.authors);
 	const [authorslist, setAuthorsList] = useState(allAuthors);
 	const [newAuthorName, setNewAuthorName] = useState('');
@@ -30,20 +32,11 @@ const CreateCourse = () => {
 
 		let newAuthor = {
 			name: name,
-			id: uuidv4(),
 		};
 
-		api.addAuthor(newAuthor).then((response) => {
-			updateAuthors(response);
-		});
+		dispatch(addAuthor(newAuthor));
 
 		setNewAuthorName('');
-	};
-
-	const updateAuthors = (author) => {
-		const updatedAuthorsList = [...authorslist, author];
-		setAuthorsList(updatedAuthorsList);
-		dispatch(addAuthor(author));
 	};
 
 	const addNewAuthorToCourse = (author) => {
@@ -60,7 +53,7 @@ const CreateCourse = () => {
 		setAuthorsList(updatedAuthorsList);
 	};
 
-	const createNewCourse = (e) => {
+	const handleCourseSubmit = (e) => {
 		e.preventDefault();
 
 		const authorIdList = courseAuthors.reduce((ids, author) => {
@@ -68,8 +61,7 @@ const CreateCourse = () => {
 			return ids;
 		}, []);
 
-		const newCourse = {
-			id: uuidv4(),
+		const courseToSubmit = {
 			title,
 			description,
 			creationDate: new Date().toLocaleDateString(),
@@ -78,17 +70,48 @@ const CreateCourse = () => {
 		};
 
 		if (isFormValid({ title, description, duration })) {
-			api.addCourse(newCourse).then((response) => {
-				dispatch(addCourse(response));
-				router.push('/courses');
+			if (courseId) {
+				dispatch(updateCourse(courseToSubmit, courseId));
+			} else {
+				dispatch(addCourse(courseToSubmit));
+			}
+			router.push('/courses');
+		}
+	};
+
+	const getCurrentCourseAuthors = () => {
+		if (currentCourse) {
+			const authors = currentCourse.authors;
+
+			authors.forEach((author) => {
+				let name = allAuthors.find((item) => item.id === author);
+				addNewAuthorToCourse(name);
 			});
 		}
 	};
 
+	const setCurrentCourseFields = () => {
+		if (currentCourse) {
+			setTitle(currentCourse.title);
+			setDescription(currentCourse.description);
+			setDuration(currentCourse.duration);
+			setTitle(currentCourse.title);
+		}
+	};
+
+	useEffect(() => {
+		getCurrentCourseAuthors();
+		setCurrentCourseFields();
+	}, [courseId]);
+
+	useEffect(() => {
+		setAuthorsList(allAuthors);
+	}, [allAuthors]);
+
 	return (
 		<section>
 			<div className='container mt-4 mb-4'>
-				<form onSubmit={createNewCourse} className='d-grid gap-4'>
+				<form onSubmit={handleCourseSubmit} className='d-grid gap-4'>
 					<div className='d-flex align-items-end'>
 						<div className='col-6'>
 							<Input
@@ -101,7 +124,7 @@ const CreateCourse = () => {
 						</div>
 						<div className='col-6 text-end'>
 							<Button
-								title='Create course'
+								title={currentCourse ? 'Update course' : 'Create course'}
 								color='warning'
 								customClass='me-4'
 								type='submit'
@@ -169,7 +192,7 @@ const CreateCourse = () => {
 									id='courseDuration'
 									placeholder='Enter duration in minutes...'
 									title='Duration'
-									value={duration}
+									value={duration.toString()}
 									handleChange={(e) => setDuration(e.target.value)}
 								/>
 							</div>
@@ -207,4 +230,4 @@ const CreateCourse = () => {
 	);
 };
 
-export default CreateCourse;
+export default CourseForm;

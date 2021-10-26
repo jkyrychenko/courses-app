@@ -12,6 +12,7 @@ const Courses = ({ isLoading }) => {
 	const authorsList = useSelector((state) => state.allAuthors.authors);
 	const coursesList = useSelector((state) => state.allCourses.courses);
 	const [courses, setCourses] = useState(coursesList);
+	const isAdmin = useSelector((state) => state.user.role) === 'admin';
 
 	const searchCourses = (query) => {
 		if (!query.trim()) {
@@ -38,14 +39,16 @@ const Courses = ({ isLoading }) => {
 		<section className='mt-4 mb-4'>
 			<div className='container'>
 				<div className='d-flex mb-4'>
-					<div className='col'>
+					<div className='col-6'>
 						<Search handleSearch={searchCourses} />
 					</div>
-					<div className='col text-end'>
-						<Link to='/courses/add' className='btn btn-info'>
-							Add new course
-						</Link>
-					</div>
+					{isAdmin && (
+						<div className='col-6 text-end'>
+							<Link to='/courses/add' className='btn btn-info'>
+								Add new course
+							</Link>
+						</div>
+					)}
 				</div>
 				{loading ? (
 					<Loader />
