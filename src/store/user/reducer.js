@@ -8,7 +8,7 @@ const userInitialState = {
 	role: '',
 };
 
-const coursesReduser = (state = userInitialState, { type, payload }) => {
+const courses = (state = userInitialState, { type, payload }) => {
 	switch (type) {
 		case actionTypes.LOGIN_USER:
 			return {
@@ -34,4 +34,4 @@ const coursesReduser = (state = userInitialState, { type, payload }) => {
 	}
 };
 
-export default coursesReduser;
+export default courses;

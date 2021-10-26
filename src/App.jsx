@@ -24,8 +24,12 @@ import isTokenExist from './mixins/token';
 const App = () => {
 	const dispatch = useDispatch();
 	const [isLoading, setIsLoading] = useState(true);
-	const fetchedCourses = useFetch('http://localhost:3000/courses/all');
-	const fetchedAuthors = useFetch('http://localhost:3000/authors/all');
+	const { data: courses, loading: coursesLoading } = useFetch(
+		'http://localhost:3000/courses/all'
+	);
+	const { data: authors, loading: authorsLoading } = useFetch(
+		'http://localhost:3000/authors/all'
+	);
 	const [isLoggedIn, setIsLoggedIn] = useState(isTokenExist());
 
 	const handleLogout = () => {
@@ -42,20 +46,13 @@ const App = () => {
 			dispatch(getUser());
 		}
 
-		dispatch(setAuthors(fetchedAuthors.data));
-		dispatch(setCourses(fetchedCourses.data));
-	}, [isLoggedIn, fetchedAuthors, fetchedCourses]);
+		dispatch(setAuthors(authors));
+		dispatch(setCourses(courses));
+	}, [dispatch, isLoggedIn, authors, courses]);
 
 	useEffect(() => {
-		if (fetchedCourses.loading || fetchedAuthors.loading) {
-			setIsLoading(true);
-		}
-
-		let loadingTimer = setTimeout(() => setIsLoading(false), 1000);
-		return () => {
-			clearTimeout(loadingTimer);
-		};
-	}, [isLoading]);
+		setIsLoading(coursesLoading && authorsLoading);
+	}, [coursesLoading, authorsLoading]);
 
 	return (
 		<Router>

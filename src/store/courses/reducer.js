@@ -4,7 +4,7 @@ const coursesInitialState = {
 	courses: [],
 };
 
-const coursesReduser = (state = coursesInitialState, { type, payload }) => {
+const courses = (state = coursesInitialState, { type, payload }) => {
 	switch (type) {
 		case actionTypes.SET_COURSES:
 			return { ...state, courses: payload };
@@ -35,4 +35,4 @@ const coursesReduser = (state = coursesInitialState, { type, payload }) => {
 	}
 };
 
-export default coursesReduser;
+export default courses;
