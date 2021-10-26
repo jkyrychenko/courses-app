@@ -23,14 +23,14 @@ import isTokenExist from './mixins/token';
 
 const App = () => {
 	const dispatch = useDispatch();
-	const [isLoggedIn, setIsLoggedIn] = useState(isTokenExist);
+	const [isLoading, setIsLoading] = useState(true);
 	const { data: courses, loading: coursesLoading } = useFetch(
 		'http://localhost:3000/courses/all'
 	);
 	const { data: authors, loading: authorsLoading } = useFetch(
 		'http://localhost:3000/authors/all'
 	);
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoggedIn, setIsLoggedIn] = useState(isTokenExist());
 
 	const handleLogout = () => {
 		setIsLoggedIn(false);
