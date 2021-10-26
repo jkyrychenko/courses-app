@@ -9,28 +9,28 @@ import { useFetch } from './mixins/use-fetch';
 import { useDispatch } from 'react-redux';
 import { setAuthors } from './store/authors/actionCreators';
 import { setCourses } from './store/courses/actionCreators';
-import { loginUser } from './store/user/actionCreators';
+import { getUser } from './store/user/actionCreators';
 import Header from './components/Header/Header';
 import Courses from './components/Courses/Courses';
 import CourseInfo from './components/Courses/CourseInfo';
 import Login from './components/Login/Login';
 import Registration from './components/Registration/Registration';
-import CreateCourse from './components/CreateCourse/CreateCourse';
+import CourseForm from './components/CourseForm/CourseForm';
 import Error from './components/Error/Error';
 import PrivateRoute from './components/Router/PrivateRoute';
-import api from './lib/api/api';
+import AdminRoute from './components/Router/AdminRoute';
 import isTokenExist from './mixins/token';
 
 const App = () => {
 	const dispatch = useDispatch();
-	const [isLoggedIn, setIsLoggedIn] = useState(isTokenExist);
+	const [isLoading, setIsLoading] = useState(true);
 	const { data: courses, loading: coursesLoading } = useFetch(
 		'http://localhost:3000/courses/all'
 	);
 	const { data: authors, loading: authorsLoading } = useFetch(
 		'http://localhost:3000/authors/all'
 	);
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoggedIn, setIsLoggedIn] = useState(isTokenExist());
 
 	const handleLogout = () => {
 		setIsLoggedIn(false);
@@ -41,17 +41,9 @@ const App = () => {
 	};
 
 	useEffect(() => {
-		if (isTokenExist) {
+		if (isTokenExist()) {
 			setIsLoggedIn(true);
-			api.getUser().then((data) => {
-				dispatch(
-					loginUser({
-						name: data.result.name,
-						email: data.result.email,
-						token: localStorage.getItem('userToken'),
-					})
-				);
-			});
+			dispatch(getUser());
 		}
 
 		dispatch(setAuthors(authors));
@@ -76,10 +68,14 @@ const App = () => {
 					path='/courses'
 					component={() => <Courses isLoading={isLoading} />}
 				></PrivateRoute>
-				<PrivateRoute
+				<AdminRoute
 					path='/courses/add'
-					component={() => <CreateCourse />}
-				></PrivateRoute>
+					children={() => <CourseForm />}
+				></AdminRoute>
+				<AdminRoute
+					path='/courses/update/:courseId'
+					children={() => <CourseForm />}
+				></AdminRoute>
 				<PrivateRoute
 					path='/courses/:courseId'
 					children={<CourseInfo />}

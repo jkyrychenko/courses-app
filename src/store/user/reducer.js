@@ -5,9 +5,10 @@ const userInitialState = {
 	name: '',
 	email: '',
 	token: '',
+	role: '',
 };
 
-const courses = (state = userInitialState, { type, payload }) => {
+const user = (state = userInitialState, { type, payload }) => {
 	switch (type) {
 		case actionTypes.LOGIN_USER:
 			return {
@@ -19,9 +20,18 @@ const courses = (state = userInitialState, { type, payload }) => {
 			};
 		case actionTypes.LOGOUT_USER:
 			return userInitialState;
+		case actionTypes.GET_USER:
+			return {
+				...state,
+				isAuth: true,
+				name: payload.name,
+				email: payload.email,
+				token: localStorage.getItem('userToken'),
+				role: payload.role,
+			};
 		default:
 			return state;
 	}
 };
 
-export default courses;
+export default user;

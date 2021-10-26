@@ -1,4 +1,5 @@
 import { actionTypes } from './actionTypes';
+import api from '../../lib/api/api';
 
 export const setAuthors = (authors) => {
 	return {
@@ -7,9 +8,7 @@ export const setAuthors = (authors) => {
 	};
 };
 
-export const addAuthor = (author) => {
-	return {
-		type: actionTypes.ADD_AUTHOR,
-		payload: author,
-	};
+export const addAuthor = (author) => async (dispatch) => {
+	let response = await api.addAuthor(author);
+	dispatch({ type: actionTypes.ADD_AUTHOR, payload: response });
 };

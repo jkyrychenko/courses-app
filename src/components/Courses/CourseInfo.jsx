@@ -10,8 +10,6 @@ const CourseInfo = () => {
 	const currentCourse = useSelector((state) =>
 		state.allCourses.courses.find((course) => course.id === courseId)
 	);
-	const currentAuthors = currentCourse.authors;
-
 	return (
 		<div className='container'>
 			<div className='text-start mt-4'>
@@ -39,8 +37,8 @@ const CourseInfo = () => {
 							</div>
 							<div>
 								<strong>Authors:</strong> &nbsp;{' '}
-								{currentAuthors &&
-									getAuthorsById(currentAuthors, allAuthors).join(', ')}
+								{currentCourse.authors &&
+									getAuthorsById(currentCourse.authors, allAuthors).join(', ')}
 							</div>
 						</div>
 					</div>
