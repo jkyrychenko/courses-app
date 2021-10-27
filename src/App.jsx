@@ -5,10 +5,7 @@ import {
 	Redirect,
 } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useFetch } from './mixins/use-fetch';
 import { useDispatch } from 'react-redux';
-import { setAuthors } from './store/authors/actionCreators';
-import { setCourses } from './store/courses/actionCreators';
 import { getUser } from './store/user/actionCreators';
 import Header from './components/Header/Header';
 import Courses from './components/Courses/Courses';
@@ -23,13 +20,6 @@ import isTokenExist from './mixins/token';
 
 const App = () => {
 	const dispatch = useDispatch();
-	const [isLoading, setIsLoading] = useState(true);
-	const { data: courses, loading: coursesLoading } = useFetch(
-		'http://localhost:3000/courses/all'
-	);
-	const { data: authors, loading: authorsLoading } = useFetch(
-		'http://localhost:3000/authors/all'
-	);
 	const [isLoggedIn, setIsLoggedIn] = useState(isTokenExist());
 
 	const handleLogout = () => {
@@ -45,14 +35,7 @@ const App = () => {
 			setIsLoggedIn(true);
 			dispatch(getUser());
 		}
-
-		dispatch(setAuthors(authors));
-		dispatch(setCourses(courses));
-	}, [dispatch, isLoggedIn, authors, courses]);
-
-	useEffect(() => {
-		setIsLoading(coursesLoading && authorsLoading);
-	}, [coursesLoading, authorsLoading]);
+	}, [dispatch, isLoggedIn]);
 
 	return (
 		<Router>
@@ -63,29 +46,22 @@ const App = () => {
 					component={() => <Login handleLogin={handleLogin} />}
 				></Route>
 				<Route path='/registration' component={Registration}></Route>
-				<PrivateRoute
-					exact
-					path='/courses'
-					component={() => <Courses isLoading={isLoading} />}
-				></PrivateRoute>
-				<AdminRoute
-					path='/courses/add'
-					children={() => <CourseForm />}
-				></AdminRoute>
+				<PrivateRoute exact path='/courses' component={Courses}></PrivateRoute>
+				<AdminRoute path='/courses/add' component={CourseForm}></AdminRoute>
 				<AdminRoute
 					path='/courses/update/:courseId'
-					children={() => <CourseForm />}
+					component={CourseForm}
 				></AdminRoute>
 				<PrivateRoute
 					path='/courses/:courseId'
-					children={<CourseInfo />}
+					component={CourseInfo}
 				></PrivateRoute>
 				<PrivateRoute
 					exact
 					path='/'
 					component={() => <Redirect to='/courses' />}
 				></PrivateRoute>
-				<PrivateRoute path='*' component={() => <Error />}></PrivateRoute>
+				<PrivateRoute path='*' component={Error}></PrivateRoute>
 			</Switch>
 		</Router>
 	);

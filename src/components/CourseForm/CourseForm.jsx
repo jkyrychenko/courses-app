@@ -1,6 +1,7 @@
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { getAuthors, getCourses } from '../../store/selectors';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
@@ -13,10 +14,9 @@ const CourseForm = () => {
 	const router = useHistory();
 	const { courseId } = useParams();
 	const dispatch = useDispatch();
-	const currentCourse = useSelector((state) =>
-		state.allCourses.courses.find((course) => course.id === courseId)
-	);
-	const allAuthors = useSelector((state) => state.allAuthors.authors);
+	const allAuthors = useSelector(getAuthors);
+	const allCourses = useSelector(getCourses);
+	const currentCourse = allCourses.find((course) => course.id === courseId);
 	const [authorslist, setAuthorsList] = useState(allAuthors);
 	const [newAuthorName, setNewAuthorName] = useState('');
 	const [courseAuthors, setCourseAuthors] = useState([]);
@@ -84,7 +84,7 @@ const CourseForm = () => {
 			const authors = currentCourse.authors;
 
 			authors.forEach((author) => {
-				let name = allAuthors.find((item) => item.id === author);
+				const name = allAuthors.find((item) => item.id === author);
 				addNewAuthorToCourse(name);
 			});
 		}
@@ -107,7 +107,6 @@ const CourseForm = () => {
 	useEffect(() => {
 		setAuthorsList(allAuthors);
 	}, [allAuthors]);
-
 	return (
 		<section>
 			<div className='container mt-4 mb-4'>

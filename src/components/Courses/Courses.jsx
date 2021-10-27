@@ -1,18 +1,26 @@
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useFetch } from '../../mixins/use-fetch';
+import { getCourses, getUserRole } from '../../store/selectors';
+import { setAuthors } from '../../store/authors/actionCreators';
+import { setCourses } from '../../store/courses/actionCreators';
 import Loader from '../Loader/Loader';
 import CoursesList from '../Courses/CoursesList';
 import Search from '../Search/Search';
 import Message from '../Message/Message';
 
-const Courses = ({ isLoading }) => {
-	const [loading, setLoading] = useState(true);
-	const authorsList = useSelector((state) => state.allAuthors.authors);
-	const coursesList = useSelector((state) => state.allCourses.courses);
-	const [courses, setCourses] = useState(coursesList);
-	const isAdmin = useSelector((state) => state.user.role) === 'admin';
+const Courses = () => {
+	const dispatch = useDispatch();
+	const [isLoading, setIsLoading] = useState(true);
+	const { data: coursesList, loading: coursesLoading } = useFetch(
+		'http://localhost:3000/courses/all'
+	);
+	const { data: authorsList, loading: authorsLoading } = useFetch(
+		'http://localhost:3000/authors/all'
+	);
+	const isAdmin = useSelector(getUserRole) === 'admin';
+	const courses = useSelector(getCourses);
 
 	const searchCourses = (query) => {
 		if (!query.trim()) {
@@ -29,11 +37,13 @@ const Courses = ({ isLoading }) => {
 	};
 
 	useEffect(() => {
-		setLoading(isLoading);
-		setCourses(coursesList);
-	}, [isLoading, coursesList]);
+		dispatch(setAuthors(authorsList));
+		dispatch(setCourses(coursesList));
+	}, [dispatch, authorsList, coursesList]);
 
-	console.log();
+	useEffect(() => {
+		setIsLoading(coursesLoading && authorsLoading);
+	}, [coursesLoading, authorsLoading]);
 
 	return (
 		<section className='mt-4 mb-4'>
@@ -50,12 +60,12 @@ const Courses = ({ isLoading }) => {
 						</div>
 					)}
 				</div>
-				{loading ? (
+				{isLoading ? (
 					<Loader />
 				) : (
 					[
 						courses?.length > 0 ? (
-							<CoursesList coursesList={courses} authorsList={authorsList} />
+							<CoursesList />
 						) : (
 							<Message text='No courses found. Please search or create one.' />
 						),
@@ -64,10 +74,6 @@ const Courses = ({ isLoading }) => {
 			</div>
 		</section>
 	);
-};
-
-Courses.propTypes = {
-	isLoading: PropTypes.bool,
 };
 
 export default Courses;

@@ -1,8 +1,12 @@
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import CourseCard from './CourseCard';
+import { getCourses, getAuthors } from '../../store/selectors';
 import getAuthorsById from '../../mixins/get-authors';
 
-const CoursesList = ({ coursesList, authorsList }) => {
+const CoursesList = () => {
+	const coursesList = useSelector(getCourses);
+	const authorsList = useSelector(getAuthors);
+
 	return (
 		<div className='d-grid gap-4'>
 			{coursesList.map((course) => (
@@ -14,11 +18,6 @@ const CoursesList = ({ coursesList, authorsList }) => {
 			))}
 		</div>
 	);
-};
-
-CoursesList.propTypes = {
-	coursesList: PropTypes.array,
-	authorsList: PropTypes.array,
 };
 
 export default CoursesList;

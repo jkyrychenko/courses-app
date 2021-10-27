@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../../store/user/actionCreators';
+import { getUserName, getUserStatus } from '../../store/selectors';
 import api from '../../lib/api/api';
 import Logo from '../Logo/Logo';
 import Button from '../Button/Button';
@@ -10,8 +11,8 @@ const Header = ({ handleLogout }) => {
 	const router = useHistory();
 	const dispatch = useDispatch();
 	const currentLocation = useLocation().pathname;
-	const userName = useSelector((state) => state.user.name);
-	const isAuth = useSelector((state) => state.user.isAuth);
+	const userName = useSelector(getUserName);
+	const isAuth = useSelector(getUserStatus);
 
 	const handleLogoutBtn = () => {
 		api.logout().then(() => {

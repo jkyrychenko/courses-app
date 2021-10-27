@@ -1,15 +1,15 @@
 import { useParams, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { getAuthors, getCourses } from '../../store/selectors';
 import Message from '../Message/Message';
 import formatDuration from '../../mixins/format-duration';
 import getAuthorsById from '../../mixins/get-authors';
 
 const CourseInfo = () => {
 	const { courseId } = useParams();
-	const allAuthors = useSelector((state) => state.allAuthors.authors);
-	const currentCourse = useSelector((state) =>
-		state.allCourses.courses.find((course) => course.id === courseId)
-	);
+	const allAuthors = useSelector(getAuthors);
+	const allCourses = useSelector(getCourses);
+	const currentCourse = allCourses.find((course) => course.id === courseId);
 	return (
 		<div className='container'>
 			<div className='text-start mt-4'>
