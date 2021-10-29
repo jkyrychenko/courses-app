@@ -1,15 +1,14 @@
 import { useSelector } from 'react-redux';
 import CourseCard from './CourseCard';
-import { getCourses, getAuthors } from '../../store/selectors';
+import { getAuthors } from '../../store/selectors';
 import getAuthorsById from '../../mixins/get-authors';
 
-const CoursesList = () => {
-	const coursesList = useSelector(getCourses);
+const CoursesList = ({ courses }) => {
 	const authorsList = useSelector(getAuthors);
 
 	return (
 		<div className='d-grid gap-4'>
-			{coursesList.map((course) => (
+			{courses.map((course) => (
 				<CourseCard
 					course={course}
 					authors={getAuthorsById(course.authors, authorsList)}
