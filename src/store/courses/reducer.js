@@ -2,6 +2,7 @@ import { actionTypes } from './actionTypes';
 
 const coursesInitialState = {
 	courses: [],
+	error: '',
 };
 
 const courses = (state = coursesInitialState, { type, payload }) => {
@@ -29,6 +30,11 @@ const courses = (state = coursesInitialState, { type, payload }) => {
 			return {
 				...state,
 				courses: state.courses.filter((course) => course.id !== payload),
+			};
+		case actionTypes.SHOW_ERROR:
+			return {
+				...state,
+				error: payload.error,
 			};
 		default:
 			return state;

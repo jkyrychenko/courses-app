@@ -1,127 +1,74 @@
 import axios from 'axios';
+import {
+	currUserPath,
+	logoutPath,
+	loginPath,
+	registerPath,
+	authorAddPath,
+	courseAddPath,
+	coursePath,
+} from './constants';
+import getOptions from './get-options';
 
 const api = {
-	getUser: function () {
-		const endpoint = 'http://localhost:3000/users/me';
-		const options = {
-			headers: {
-				Authorization: localStorage.getItem('userToken'),
-			},
-		};
-		return new Promise((resolve, reject) => {
-			axios
-				.get(endpoint, options)
-				.then((response) => {
-					resolve(response.data);
-				})
-				.catch((reason) => reject(reason));
-		});
+	getUser: function (token) {
+		return axios.get(currUserPath, getOptions(token));
 	},
 
-	logout: function () {
-		const endpoint = 'http://localhost:3000/logout';
-		const options = {
-			headers: {
-				Authorization: localStorage.getItem('userToken'),
-			},
-		};
+	logout: function (token) {
 		return new Promise((resolve, reject) => {
 			axios
-				.delete(endpoint, options)
+				.delete(logoutPath, getOptions(token))
 				.then(() => resolve())
 				.catch((reason) => reject(reason));
 		});
 	},
 
 	login: function (user) {
-		const endpoint = 'http://localhost:3000/login';
 		return new Promise((resolve, reject) => {
 			axios
-				.post(endpoint, user)
+				.post(loginPath, user)
 				.then((response) => resolve(response.data))
 				.catch((reason) => reject(reason));
 		});
 	},
 
 	register: function (user) {
-		const endpoint = 'http://localhost:3000/register';
 		return new Promise((resolve, reject) => {
 			axios
-				.post(endpoint, user)
+				.post(registerPath, user)
 				.then((response) => resolve(response.data))
 				.catch((reason) => reject(reason));
 		});
 	},
 
-	getCoursesData: function (url) {
-		const options = {
-			headers: {
-				Authorization: localStorage.getItem('userToken'),
-			},
-		};
+	getCoursesData: function (url, token) {
 		return new Promise((resolve, reject) => {
 			axios
-				.get(url, options)
+				.get(url, getOptions(token))
 				.then((response) => resolve(response))
 				.catch((reason) => reject(reason));
 		});
 	},
 
-	addAuthor: function (author) {
-		const endpoint = 'http://localhost:3000/authors/add';
-		const options = {
-			headers: {
-				Authorization: localStorage.getItem('userToken'),
-			},
-		};
-		return new Promise((resolve, reject) => {
-			axios
-				.post(endpoint, author, options)
-				.then((response) => resolve(response.data.result))
-				.catch((reason) => reject(reason));
-		});
+	addAuthor: function (author, token) {
+		axios.post(authorAddPath, author, getOptions(token));
 	},
 
-	addCourse: function (course) {
-		const endpoint = 'http://localhost:3000/courses/add';
-		const options = {
-			headers: {
-				Authorization: localStorage.getItem('userToken'),
-			},
-		};
-		return new Promise((resolve, reject) => {
-			axios
-				.post(endpoint, course, options)
-				.then((response) => resolve(response.data.result))
-				.catch((reason) => reject(reason));
-		});
+	addCourse: function (course, token) {
+		return axios.post(courseAddPath, course, getOptions(token));
 	},
 
-	updateCourse: function (course, id) {
-		const endpoint = `http://localhost:3000/courses/${id}`;
-		const options = {
-			headers: {
-				Authorization: localStorage.getItem('userToken'),
-			},
-		};
-		return new Promise((resolve, reject) => {
-			axios
-				.put(endpoint, course, options)
-				.then((response) => resolve(response.data.result))
-				.catch((reason) => reject(reason));
-		});
+	updateCourse: function (course, id, token) {
+		const endpoint = coursePath + id;
+		return axios.put(endpoint, course, getOptions(token));
 	},
 
-	removeCourse: function (id) {
-		const endpoint = `http://localhost:3000/courses/${id}`;
-		const options = {
-			headers: {
-				Authorization: localStorage.getItem('userToken'),
-			},
-		};
+	removeCourse: function (id, token) {
+		const endpoint = coursePath + id;
 		return new Promise((resolve, reject) => {
 			axios
-				.delete(endpoint, options)
+				.delete(endpoint, getOptions(token))
 				.then((response) => resolve(response))
 				.catch((reason) => reject(reason));
 		});

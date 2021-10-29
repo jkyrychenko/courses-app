@@ -4,9 +4,9 @@ import {
 	Switch,
 	Redirect,
 } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { getUser } from './store/user/actionCreators';
+import { getUserData } from './store/user/thunk';
 import Header from './components/Header/Header';
 import Courses from './components/Courses/Courses';
 import CourseInfo from './components/Courses/CourseInfo';
@@ -20,31 +20,18 @@ import isTokenExist from './mixins/token';
 
 const App = () => {
 	const dispatch = useDispatch();
-	const [isLoggedIn, setIsLoggedIn] = useState(isTokenExist());
-
-	const handleLogout = () => {
-		setIsLoggedIn(false);
-	};
-
-	const handleLogin = () => {
-		setIsLoggedIn(true);
-	};
 
 	useEffect(() => {
 		if (isTokenExist()) {
-			setIsLoggedIn(true);
-			dispatch(getUser());
+			dispatch(getUserData(localStorage.getItem('userToken')));
 		}
-	}, [dispatch, isLoggedIn]);
+	}, [dispatch]);
 
 	return (
 		<Router>
-			<Header handleLogout={handleLogout} />
+			<Header />
 			<Switch>
-				<Route
-					path='/login'
-					component={() => <Login handleLogin={handleLogin} />}
-				></Route>
+				<Route path='/login' component={Login}></Route>
 				<Route path='/registration' component={Registration}></Route>
 				<PrivateRoute exact path='/courses' component={Courses}></PrivateRoute>
 				<AdminRoute path='/courses/add' component={CourseForm}></AdminRoute>

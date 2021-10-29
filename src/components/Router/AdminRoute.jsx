@@ -1,14 +1,15 @@
 import { Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { isAdmin } from '../../store/selectors';
 
 const AdminRoute = ({ component: Component, ...rest }) => {
-	const isAdmin = useSelector((state) => state.user.role) === 'admin';
+	const isUserAdmin = useSelector(isAdmin);
 
 	return (
 		<Route
 			{...rest}
 			render={(props) =>
-				isAdmin ? <Component {...props} /> : <Redirect to='/courses' />
+				isUserAdmin ? <Component {...props} /> : <Redirect to='/courses' />
 			}
 		/>
 	);

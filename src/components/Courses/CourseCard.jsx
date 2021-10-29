@@ -1,17 +1,18 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteCourse } from '../../store/courses/actionCreators';
-import { getUserRole } from '../../store/selectors';
+import { deleteCourse } from '../../store/courses/thunk';
+import { isAdmin } from '../../store/selectors';
 import Button from '../Button/Button';
 import formatDuration from '../../mixins/format-duration';
 
 const CourseCard = ({ course, authors }) => {
 	const dispatch = useDispatch();
-	const isAdmin = useSelector(getUserRole) === 'admin';
+	const isUserAdmin = useSelector(isAdmin);
+	const token = localStorage.getItem('userToken');
 
 	const deleteCourseById = (id) => {
-		dispatch(deleteCourse(id));
+		dispatch(deleteCourse(id, token));
 	};
 
 	return (
@@ -34,7 +35,7 @@ const CourseCard = ({ course, authors }) => {
 					<Link to={`/courses/${course.id}`} className='btn btn-warning'>
 						Show course
 					</Link>
-					{isAdmin && (
+					{isUserAdmin && (
 						<>
 							<Button
 								color='danger'

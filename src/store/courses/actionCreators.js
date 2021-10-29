@@ -1,5 +1,4 @@
 import { actionTypes } from './actionTypes';
-import api from '../../lib/api/api';
 
 export const setCourses = (courses) => {
 	return {
@@ -8,19 +7,30 @@ export const setCourses = (courses) => {
 	};
 };
 
-export const addCourse = (course) => async (dispatch) => {
-	let response = await api.addCourse(course);
-	dispatch({ type: actionTypes.ADD_COURSE, payload: response });
+export const addCourseSuccess = (course) => {
+	return {
+		type: actionTypes.ADD_COURSE,
+		payload: course,
+	};
 };
 
-export const updateCourse = (course, id) => async (dispatch) => {
-	let response = await api.updateCourse(course, id);
-	dispatch({ type: actionTypes.UPDATE_COURSE, payload: response });
+export const updateCourseSuccess = (course) => {
+	return {
+		type: actionTypes.UPDATE_COURSE,
+		payload: course,
+	};
 };
 
-export const deleteCourse = (course) => async (dispatch) => {
-	let response = await api.removeCourse(course);
-	if (response.data.successful) {
-		dispatch({ type: actionTypes.DELETE_COURSE, payload: course });
-	}
+export const deleteCourseSuccess = (course) => {
+	return {
+		type: actionTypes.DELETE_COURSE,
+		payload: course,
+	};
+};
+
+export const showError = (error) => {
+	return {
+		type: actionTypes.SHOW_ERROR,
+		payload: error,
+	};
 };
