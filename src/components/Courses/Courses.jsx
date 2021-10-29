@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFetch } from '../../mixins/use-fetch';
-import { getCourses, isAdmin, courseError } from '../../store/selectors';
+import { isAdmin, courseError } from '../../store/selectors';
 import { setAuthors } from '../../store/authors/actionCreators';
 import { setCourses } from '../../store/courses/actionCreators';
 import Loader from '../Loader/Loader';
@@ -23,24 +23,25 @@ const Courses = () => {
 		token
 	);
 	const isUserAdmin = useSelector(isAdmin);
-	const courses = useSelector(getCourses);
+	const [filteredCourses, setFilteredCourses] = useState([]);
 	const error = useSelector(courseError);
 
 	const searchCourses = (query) => {
 		if (!query.trim()) {
-			setCourses(coursesList);
+			setFilteredCourses(coursesList);
 			return;
 		}
 		let searchedQuery = query.toLowerCase();
-		let filteredCourses = coursesList.filter(
+		let searchResult = coursesList.filter(
 			(el) =>
 				el.id.toLowerCase().includes(searchedQuery) ||
 				el.title.toLowerCase().includes(searchedQuery)
 		);
-		setCourses(filteredCourses);
+		setFilteredCourses(searchResult);
 	};
 
 	useEffect(() => {
+		setFilteredCourses(coursesList);
 		dispatch(setAuthors(authorsList));
 		dispatch(setCourses(coursesList));
 	}, [dispatch, authorsList, coursesList]);
@@ -69,8 +70,8 @@ const Courses = () => {
 					<Loader />
 				) : (
 					[
-						courses?.length > 0 ? (
-							<CoursesList />
+						filteredCourses?.length > 0 ? (
+							<CoursesList courses={filteredCourses} />
 						) : (
 							<Message text='No courses found. Please search or create one.' />
 						),
