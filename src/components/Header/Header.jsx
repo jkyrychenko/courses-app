@@ -7,7 +7,7 @@ import api from '../../lib/api/api';
 import Logo from '../Logo/Logo';
 import Button from '../Button/Button';
 
-const Header = ({ handleLogout }) => {
+const Header = () => {
 	const router = useHistory();
 	const dispatch = useDispatch();
 	const currentLocation = useLocation().pathname;
@@ -15,10 +15,10 @@ const Header = ({ handleLogout }) => {
 	const isAuth = useSelector(getUserStatus);
 
 	const handleLogoutBtn = () => {
-		api.logout().then(() => {
+		const token = localStorage.getItem('userToken');
+		api.logout(token).then(() => {
 			localStorage.removeItem('userToken');
 			dispatch(logoutUser());
-			handleLogout();
 			router.push('/login');
 		});
 	};

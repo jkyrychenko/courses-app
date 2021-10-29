@@ -8,7 +8,7 @@ import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
 
-const Login = ({ handleLogin }) => {
+const Login = () => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [email, setEmail] = useState('');
@@ -35,7 +35,6 @@ const Login = ({ handleLogin }) => {
 						})
 					);
 					localStorage.setItem('userToken', data.result);
-					handleLogin();
 					history.push('/courses');
 				}
 			})

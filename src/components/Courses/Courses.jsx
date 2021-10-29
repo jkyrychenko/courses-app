@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFetch } from '../../mixins/use-fetch';
-import { getCourses, getUserRole } from '../../store/selectors';
+import { getCourses, isAdmin, courseError } from '../../store/selectors';
 import { setAuthors } from '../../store/authors/actionCreators';
 import { setCourses } from '../../store/courses/actionCreators';
 import Loader from '../Loader/Loader';
@@ -12,15 +12,19 @@ import Message from '../Message/Message';
 
 const Courses = () => {
 	const dispatch = useDispatch();
+	const token = localStorage.getItem('userToken');
 	const [isLoading, setIsLoading] = useState(true);
 	const { data: coursesList, loading: coursesLoading } = useFetch(
-		'http://localhost:3000/courses/all'
+		'http://localhost:3000/courses/all',
+		token
 	);
 	const { data: authorsList, loading: authorsLoading } = useFetch(
-		'http://localhost:3000/authors/all'
+		'http://localhost:3000/authors/all',
+		token
 	);
-	const isAdmin = useSelector(getUserRole) === 'admin';
+	const isUserAdmin = useSelector(isAdmin);
 	const courses = useSelector(getCourses);
+	const error = useSelector(courseError);
 
 	const searchCourses = (query) => {
 		if (!query.trim()) {
@@ -48,11 +52,12 @@ const Courses = () => {
 	return (
 		<section className='mt-4 mb-4'>
 			<div className='container'>
+				{error && <Message text={error} />}
 				<div className='d-flex mb-4'>
 					<div className='col-6'>
 						<Search handleSearch={searchCourses} />
 					</div>
-					{isAdmin && (
+					{isUserAdmin && (
 						<div className='col-6 text-end'>
 							<Link to='/courses/add' className='btn btn-info'>
 								Add new course
