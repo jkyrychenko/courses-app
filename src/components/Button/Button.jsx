@@ -10,6 +10,7 @@ const Button = ({
 	return (
 		<button
 			type={type}
+			title={title}
 			className={`btn btn-${color} text-nowrap ${customClass}`}
 			onClick={handleClick}
 		>

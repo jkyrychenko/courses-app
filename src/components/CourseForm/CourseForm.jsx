@@ -174,6 +174,7 @@ const CourseForm = () => {
 								{authorslist.map((author) => (
 									<div
 										className='d-flex justify-content-between align-items-center mb-2'
+										data-testid='courseFormAuthor'
 										key={author.id}
 									>
 										{author.name}{' '}
@@ -210,6 +211,7 @@ const CourseForm = () => {
 									courseAuthors.map((author) => (
 										<div
 											className='d-flex justify-content-between align-items-center mb-2'
+											data-testid='courseFormAuthorsAdded'
 											key={author.id}
 										>
 											{author.name}

@@ -16,7 +16,10 @@ const CourseCard = ({ course, authors }) => {
 	};
 
 	return (
-		<article className='row align-items-start p-4 bg-light border'>
+		<article
+			className='row align-items-start p-4 bg-light border'
+			data-testid='courseCard'
+		>
 			<div className='col-8 overflow-hidden'>
 				<h4>{course.title}</h4>
 				<p className='box-truncate'>{course.description}</p>
