@@ -1,10 +1,17 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useFetch } from '../../mixins/use-fetch';
-import { isAdmin, courseError } from '../../store/selectors';
-import { setAuthors } from '../../store/authors/actionCreators';
-import { setCourses } from '../../store/courses/actionCreators';
+
+import {
+	getUserToken,
+	getCourses,
+	getCoursesLoading,
+	getAuthorsLoading,
+	isAdmin,
+} from '../../store/selectors';
+import { fetchCourses } from '../../store/courses/thunk';
+import { fetchAuthors } from '../../store/authors/thunk';
+
 import Loader from '../Loader/Loader';
 import CoursesList from '../Courses/CoursesList';
 import Search from '../Search/Search';
@@ -12,48 +19,46 @@ import Message from '../Message/Message';
 
 const Courses = () => {
 	const dispatch = useDispatch();
-	const token = localStorage.getItem('userToken');
-	const [isLoading, setIsLoading] = useState(true);
-	const { data: coursesList, loading: coursesLoading } = useFetch(
-		'http://localhost:3000/courses/all',
-		token
-	);
-	const { data: authorsList, loading: authorsLoading } = useFetch(
-		'http://localhost:3000/authors/all',
-		token
-	);
+
 	const isUserAdmin = useSelector(isAdmin);
+	const token = useSelector(getUserToken);
+	const courses = useSelector(getCourses);
+	const isCourseLoading = useSelector(getCoursesLoading);
+	const isAuthorsLoading = useSelector(getAuthorsLoading);
+
 	const [filteredCourses, setFilteredCourses] = useState([]);
-	const error = useSelector(courseError);
 
 	const searchCourses = (query) => {
 		if (!query.trim()) {
-			setFilteredCourses(coursesList);
+			setFilteredCourses(courses);
+
 			return;
 		}
+
 		let searchedQuery = query.toLowerCase();
-		let searchResult = coursesList.filter(
+		let searchResult = courses.filter(
 			(el) =>
 				el.id.toLowerCase().includes(searchedQuery) ||
 				el.title.toLowerCase().includes(searchedQuery)
 		);
+
 		setFilteredCourses(searchResult);
 	};
 
 	useEffect(() => {
-		setFilteredCourses(coursesList);
-		dispatch(setAuthors(authorsList));
-		dispatch(setCourses(coursesList));
-	}, [dispatch, authorsList, coursesList]);
+		setFilteredCourses(courses);
+	}, [courses]);
 
 	useEffect(() => {
-		setIsLoading(coursesLoading && authorsLoading);
-	}, [coursesLoading, authorsLoading]);
+		if (token) {
+			dispatch(fetchCourses(token));
+			dispatch(fetchAuthors(token));
+		}
+	}, [dispatch, token]);
 
 	return (
 		<section className='mt-4 mb-4'>
 			<div className='container'>
-				{error && <Message text={error} />}
 				<div className='d-flex mb-4'>
 					<div className='col-6'>
 						<Search handleSearch={searchCourses} />
@@ -66,16 +71,12 @@ const Courses = () => {
 						</div>
 					)}
 				</div>
-				{isLoading ? (
+				{isCourseLoading || isAuthorsLoading ? (
 					<Loader />
+				) : filteredCourses?.length > 0 ? (
+					<CoursesList courses={filteredCourses} />
 				) : (
-					[
-						filteredCourses?.length > 0 ? (
-							<CoursesList courses={filteredCourses} />
-						) : (
-							<Message text='No courses found. Please search or create one.' />
-						),
-					]
+					<Message text='No courses found. Please search or create one.' />
 				)}
 			</div>
 		</section>

@@ -1,34 +1,44 @@
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getAuthors, getCourses, authorsError } from '../../store/selectors';
+
+import {
+	getAuthors,
+	getCourses,
+	authorsError,
+	getUserToken,
+} from '../../store/selectors';
+import { addAuthor } from '../../store/authors/thunk';
+import { addCourse, updateCourse } from '../../store/courses/thunk';
+
+import formatDuration from '../../mixins/format-duration';
+import isFormValid from '../../mixins/form-validation';
+
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
-import formatDuration from '../../mixins/format-duration';
-import isFormValid from '../../mixins/form-validation';
-import { addAuthor } from '../../store/authors/thunk';
-import { addCourse, updateCourse } from '../../store/courses/thunk';
 
 const CourseForm = () => {
 	const router = useHistory();
 	const { courseId } = useParams();
 	const dispatch = useDispatch();
+
 	const allAuthors = useSelector(getAuthors);
 	const allCourses = useSelector(getCourses);
 	const error = useSelector(authorsError);
 	const currentCourse = allCourses.find((course) => course.id === courseId);
+
 	const [authorslist, setAuthorsList] = useState(allAuthors);
 	const [newAuthorName, setNewAuthorName] = useState('');
 	const [courseAuthors, setCourseAuthors] = useState([]);
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [duration, setDuration] = useState('');
-	const token = localStorage.getItem('userToken');
+	const token = useSelector(getUserToken);
 
 	const addNewAuthor = (name) => {
 		if (!name.trim() || name.length < 2) {
-			alert('Please, enter valid name!');
+			// alert('Please, enter valid name!');
 			return;
 		}
 
@@ -111,7 +121,7 @@ const CourseForm = () => {
 	}, [allAuthors]);
 	return (
 		<section>
-			<Message text={error} />
+			{error && <Message text={error} />}
 			<div className='container mt-4 mb-4'>
 				<form onSubmit={handleCourseSubmit} className='d-grid gap-4'>
 					<div className='d-flex align-items-end'>

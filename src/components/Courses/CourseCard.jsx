@@ -1,15 +1,17 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { deleteCourse } from '../../store/courses/thunk';
-import { isAdmin } from '../../store/selectors';
-import Button from '../Button/Button';
+import { isAdmin, getUserToken } from '../../store/selectors';
 import formatDuration from '../../mixins/format-duration';
+
+import Button from '../Button/Button';
 
 const CourseCard = ({ course, authors }) => {
 	const dispatch = useDispatch();
 	const isUserAdmin = useSelector(isAdmin);
-	const token = localStorage.getItem('userToken');
+	const token = useSelector(getUserToken);
 
 	const deleteCourseById = (id) => {
 		dispatch(deleteCourse(id, token));

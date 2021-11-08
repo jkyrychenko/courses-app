@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import { Link, useHistory } from 'react-router-dom';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { loginUser } from '../../store/user/actionCreators';
-import api from '../../lib/api/api';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { loginUser } from '../../store/user/thunk';
+import { getUserStatus, getUserError } from '../../store/selectors';
+
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
@@ -11,9 +13,13 @@ import Message from '../Message/Message';
 const Login = () => {
 	const history = useHistory();
 	const dispatch = useDispatch();
+
+	const isAuthUser = useSelector(getUserStatus);
+	const error = useSelector(getUserError);
+
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [loginError, setLoginError] = useState(false);
+	const [loginError, setLoginError] = useState(null);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -23,30 +29,22 @@ const Login = () => {
 			password,
 		};
 
-		api
-			.login(user)
-			.then((data) => {
-				if (data.successful) {
-					dispatch(
-						loginUser({
-							name: data.user.name,
-							email: data.user.email,
-							token: data.result,
-						})
-					);
-					localStorage.setItem('userToken', data.result);
-					history.push('/courses');
-				}
-			})
-			.catch((error) => {
-				console.log(error.response.data);
-				setLoginError(true);
-			});
+		dispatch(loginUser(user));
 	};
+
+	useEffect(() => {
+		if (isAuthUser) {
+			history.push('/courses');
+		}
+	}, [history, isAuthUser]);
+
+	useEffect(() => {
+		setLoginError(error);
+	}, [error]);
 
 	return (
 		<div className='container'>
-			{loginError && <Message text='Entered data is invalid.' type='danger' />}
+			{loginError && <Message text={loginError} type='danger' />}
 			<div className='w-50 mx-auto mt-5'>
 				<h2 className='text-center mb-5'>Login</h2>
 				<form onSubmit={handleSubmit}>

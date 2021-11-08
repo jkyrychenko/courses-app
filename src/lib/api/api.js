@@ -1,78 +1,36 @@
 import axios from 'axios';
-import {
-	currUserPath,
-	logoutPath,
-	loginPath,
-	registerPath,
-	authorAddPath,
-	courseAddPath,
-	coursePath,
-} from './constants';
+
+import endpoints from './endpoints';
 import getOptions from './get-options';
 
 const api = {
-	getUser: function (token) {
-		return axios.get(currUserPath, getOptions(token));
-	},
+	getUser: async (token) =>
+		axios.get(endpoints.GET_USER_INFO, getOptions(token)),
 
-	logout: function (token) {
-		return new Promise((resolve, reject) => {
-			axios
-				.delete(logoutPath, getOptions(token))
-				.then(() => resolve())
-				.catch((reason) => reject(reason));
-		});
-	},
+	logout: async (token) =>
+		axios.delete(endpoints.LOGOUT_USER, getOptions(token)),
 
-	login: function (user) {
-		return new Promise((resolve, reject) => {
-			axios
-				.post(loginPath, user)
-				.then((response) => resolve(response.data))
-				.catch((reason) => reject(reason));
-		});
-	},
+	login: async (user) => axios.post(endpoints.LOGIN_USER, user),
 
-	register: function (user) {
-		return new Promise((resolve, reject) => {
-			axios
-				.post(registerPath, user)
-				.then((response) => resolve(response.data))
-				.catch((reason) => reject(reason));
-		});
-	},
+	register: async (user) => axios.post(endpoints.REGISTER_USER, user),
 
-	getCoursesData: function (url, token) {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(url, getOptions(token))
-				.then((response) => resolve(response))
-				.catch((reason) => reject(reason));
-		});
-	},
+	getCoursesData: async (token) =>
+		axios.get(endpoints.ALL_COURSES, getOptions(token)),
 
-	addAuthor: function (author, token) {
-		axios.post(authorAddPath, author, getOptions(token));
-	},
+	getAuthorsData: async (token) =>
+		axios.get(endpoints.ALL_AUTHORS, getOptions(token)),
 
-	addCourse: function (course, token) {
-		return axios.post(courseAddPath, course, getOptions(token));
-	},
+	addAuthor: async (author, token) =>
+		axios.post(endpoints.ADD_NEW_AUTHOR, author, getOptions(token)),
 
-	updateCourse: function (course, id, token) {
-		const endpoint = coursePath + id;
-		return axios.put(endpoint, course, getOptions(token));
-	},
+	addCourse: async (course, token) =>
+		axios.post(endpoints.ADD_NEW_COURSE, course, getOptions(token)),
 
-	removeCourse: function (id, token) {
-		const endpoint = coursePath + id;
-		return new Promise((resolve, reject) => {
-			axios
-				.delete(endpoint, getOptions(token))
-				.then((response) => resolve(response))
-				.catch((reason) => reject(reason));
-		});
-	},
+	updateCourse: async (course, id, token) =>
+		axios.put(endpoints.CURRENT_COURSE(id), course, getOptions(token)),
+
+	removeCourse: async (id, token) =>
+		axios.delete(endpoints.CURRENT_COURSE(id), getOptions(token)),
 };
 
 export default api;

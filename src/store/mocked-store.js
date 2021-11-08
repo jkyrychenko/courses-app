@@ -5,7 +5,8 @@ const mockedState = {
 			{ name: 'author2', id: '1c972c52-3198-4098-b6f7-799b45903199' },
 			{ name: 'author3', id: '072fe3fc-e751-4745-9af5-aa9eed0ea9ed' },
 		],
-		error: '',
+		error: null,
+		loading: false,
 	},
 	allCourses: {
 		courses: [
@@ -21,7 +22,8 @@ const mockedState = {
 				id: 'fbba6300-b0a8-4483-8f07-fd4282eb3c04',
 			},
 		],
-		error: '',
+		error: null,
+		loading: false,
 	},
 	user: {
 		isAuth: true,
@@ -29,13 +31,15 @@ const mockedState = {
 		email: 'user@test.com',
 		token: '123456789',
 		role: 'admin',
+		error: null,
+		loading: false,
 	},
 };
 
-const mockedStore = {
-	getState: () => mockedState,
+const getMockedStore = (store) => ({
+	getState: () => ({ ...mockedState, ...store }),
 	subscribe: jest.fn(),
 	dispatch: jest.fn(),
-};
+});
 
-export default mockedStore;
+export default getMockedStore;

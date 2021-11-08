@@ -1,7 +1,9 @@
 import { useSelector } from 'react-redux';
-import CourseCard from './CourseCard';
+
 import { getAuthors } from '../../store/selectors';
 import getAuthorsById from '../../mixins/get-authors';
+
+import CourseCard from './CourseCard';
 
 const CoursesList = ({ courses }) => {
 	const authorsList = useSelector(getAuthors);

@@ -6,7 +6,10 @@ import {
 } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+
 import { getUserData } from './store/user/thunk';
+import { getToken } from './mixins/token';
+
 import Header from './components/Header/Header';
 import Courses from './components/Courses/Courses';
 import CourseInfo from './components/Courses/CourseInfo';
@@ -16,14 +19,15 @@ import CourseForm from './components/CourseForm/CourseForm';
 import Error from './components/Error/Error';
 import PrivateRoute from './components/Router/PrivateRoute';
 import AdminRoute from './components/Router/AdminRoute';
-import isTokenExist from './mixins/token';
 
 const App = () => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (isTokenExist()) {
-			dispatch(getUserData(localStorage.getItem('userToken')));
+		const token = getToken();
+
+		if (token) {
+			dispatch(getUserData(token));
 		}
 	}, [dispatch]);
 
