@@ -1,9 +1,13 @@
 export const getCourses = (state) => state.allCourses.courses;
+export const getCoursesLoading = (state) => state.allCourses.loading;
+export const courseError = (state) => state.allCourses.error;
 export const getAuthors = (state) => state.allAuthors.authors;
+export const authorsError = (state) => state.allAuthors.error;
+export const getAuthorsLoading = (state) => state.allAuthors.loading;
 export const getUser = (state) => state.user;
 export const getUserName = (state) => state.user.name;
 export const getUserStatus = (state) => state.user.isAuth;
 export const getUserRole = (state) => state.user.role;
-export const isAdmin = (state) => Boolean(state.user.role === 'admin');
-export const courseError = (state) => state.allCourses.error;
-export const authorsError = (state) => state.allAuthors.error;
+export const isAdmin = (state) => state.user.role === 'admin';
+export const getUserError = (state) => state.user.error;
+export const getUserToken = (state) => state.user.token;

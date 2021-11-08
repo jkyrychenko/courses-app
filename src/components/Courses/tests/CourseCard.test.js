@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
-import mockedStore from '../../../store/mocked-store';
+import getMockedStore from '../../../store/mocked-store';
 import CourseCard from '../CourseCard';
 
 const buildComponent = (store, props) => {
@@ -42,31 +42,31 @@ describe('CourseCard component', () => {
 	});
 
 	test('has title', () => {
-		const { getByText } = buildComponent(mockedStore, props);
+		const { getByText } = buildComponent(getMockedStore(), props);
 		const title = getByText('UI/UX');
 		expect(title).toBeInTheDocument();
 	});
 
 	test('has description', () => {
-		const { getByText } = buildComponent(mockedStore, props);
+		const { getByText } = buildComponent(getMockedStore(), props);
 		const description = getByText('Lorem ipsum 12');
 		expect(description).toBeInTheDocument();
 	});
 
 	test('has duration in correct format', () => {
-		const { getByText } = buildComponent(mockedStore, props);
+		const { getByText } = buildComponent(getMockedStore(), props);
 		const duration = getByText('02:04 hours');
 		expect(duration).toBeInTheDocument();
 	});
 
 	test('has authors listed', () => {
-		const { getByText } = buildComponent(mockedStore, props);
+		const { getByText } = buildComponent(getMockedStore(), props);
 		const authors = getByText('author2, author3');
 		expect(authors).toBeInTheDocument();
 	});
 
 	test('has creation date', () => {
-		const { getByText } = buildComponent(mockedStore, props);
+		const { getByText } = buildComponent(getMockedStore(), props);
 		const creationDate = getByText('20/10/2021');
 		expect(creationDate).toBeInTheDocument();
 	});

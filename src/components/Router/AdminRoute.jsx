@@ -1,5 +1,6 @@
 import { Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
 import { isAdmin } from '../../store/selectors';
 
 const AdminRoute = ({ component: Component, ...rest }) => {

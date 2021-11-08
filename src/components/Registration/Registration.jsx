@@ -1,13 +1,15 @@
 import { Link, useHistory } from 'react-router-dom';
 import { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+
 import api from '../../lib/api/api';
+
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Message from '../Message/Message';
 
 const Registration = () => {
 	let history = useHistory();
+
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -20,7 +22,6 @@ const Registration = () => {
 			name,
 			email,
 			password,
-			id: uuidv4(),
 		};
 
 		api

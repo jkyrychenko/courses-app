@@ -1,4 +1,5 @@
 import { Route, Redirect } from 'react-router-dom';
+
 import isTokenExist from '../../mixins/token';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {

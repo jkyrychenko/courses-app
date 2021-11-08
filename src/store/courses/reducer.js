@@ -2,13 +2,31 @@ import { actionTypes } from './actionTypes';
 
 const coursesInitialState = {
 	courses: [],
-	error: '',
+	error: null,
+	loading: false,
 };
 
 const courses = (state = coursesInitialState, { type, payload }) => {
 	switch (type) {
-		case actionTypes.SET_COURSES:
-			return { ...state, courses: payload };
+		case actionTypes.FETCH_COURSES_START:
+			return {
+				...state,
+				error: null,
+				loading: true,
+			};
+		case actionTypes.FETCH_COURSES_SUCCESS:
+			return {
+				...state,
+				error: null,
+				loading: false,
+				courses: payload,
+			};
+		case actionTypes.FETCH_COURSES_ERROR:
+			return {
+				...state,
+				error: payload,
+				loading: false,
+			};
 		case actionTypes.ADD_COURSE:
 			return { ...state, courses: [...state.courses, payload] };
 		case actionTypes.UPDATE_COURSE:

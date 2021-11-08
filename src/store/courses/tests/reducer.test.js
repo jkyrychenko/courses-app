@@ -2,14 +2,19 @@ import { actionTypes } from '../actionTypes';
 import courses from '../reducer';
 
 describe('Courses reducer', () => {
-	test('returns the initial state', () => {
-		expect(courses(undefined, {})).toEqual({ courses: [], error: '' });
+	test('should return the initial state', () => {
+		expect(courses(undefined, {})).toEqual({
+			courses: [],
+			error: null,
+			loading: false,
+		});
 	});
 
-	test('adds new course and returns new state', () => {
+	test('should add new course and return new state', () => {
 		const prevState = {
 			courses: [],
-			error: '',
+			error: null,
+			loading: false,
 		};
 		const newCourse = {
 			title: 'UI/UX',
@@ -38,11 +43,12 @@ describe('Courses reducer', () => {
 					id: 'fbba6300-b0a8-4483-8f07-fd4282eb3c04',
 				},
 			],
-			error: '',
+			error: null,
+			loading: false,
 		});
 	});
 
-	test('gets all courses and returns new state', () => {
+	test('should get all courses and returns new state', () => {
 		const fetchedCourses = [
 			{
 				title: 'UI/UX',
@@ -58,7 +64,7 @@ describe('Courses reducer', () => {
 		];
 		expect(
 			courses(undefined, {
-				type: actionTypes.SET_COURSES,
+				type: actionTypes.FETCH_COURSES_SUCCESS,
 				payload: fetchedCourses,
 			})
 		).toEqual({
@@ -75,7 +81,8 @@ describe('Courses reducer', () => {
 					id: 'fbba6300-b0a8-4483-8f07-fd4282eb3c04',
 				},
 			],
-			error: '',
+			error: null,
+			loading: false,
 		});
 	});
 });

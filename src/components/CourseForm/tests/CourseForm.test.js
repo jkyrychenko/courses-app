@@ -2,8 +2,11 @@ import { render, fireEvent } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
-import mockedStore from '../../../store/mocked-store';
+import { useParams } from 'react-router-dom';
+
+import getMockedStore from '../../../store/mocked-store';
 import addAuthor from '../../../store/authors/actionCreators';
+
 import CourseForm from '../CourseForm';
 
 const buildComponent = (store) => {
@@ -18,68 +21,106 @@ const buildComponent = (store) => {
 	);
 };
 
-jest.mock('react-router-dom', () => ({
-	...jest.requireActual('react-router-dom'),
-	useParams: () => ({
-		courseId: 'fbba6300-b0a8-4483-8f07-fd4282eb3c04',
-	}),
+jest.mock('react-router', () => ({
+	...jest.requireActual('react-router'),
+	useParams: jest.fn(),
 }));
 
-describe('CourseForm component', () => {
-	test('shows all authors list', () => {
-		const { getAllByTestId } = buildComponent(mockedStore);
-		const authors = getAllByTestId('courseFormAuthor');
-		const mockedAuthors = mockedStore.getState().allAuthors.authors;
-		expect(authors.length).toEqual(mockedAuthors.length);
+describe('<CourseForm />', () => {
+	beforeEach(() => {
+		useParams.mockReturnValue({ courseId: undefined });
 	});
-
-	test('shows course authors list', () => {
-		const { getAllByTestId } = buildComponent(mockedStore);
-		const authors = getAllByTestId('courseFormAuthorsAdded');
-		expect(authors.length).toBeGreaterThan(0);
-	});
-
-	test('create author dispatch', () => {
-		const dispatch = jest.fn();
-		const { getByText } = buildComponent(mockedStore);
-		const button = getByText('Create author');
-		fireEvent.click(button);
-		dispatch(addAuthor);
-		expect(dispatch).toHaveBeenCalledTimes(1);
-	});
-
-	test('adds author to course authors list by click', () => {
-		const { container, getAllByTestId } = buildComponent(mockedStore);
-		const button = container.querySelectorAll('button[title="Add author"]')[0];
-		fireEvent.click(button);
-		expect(getAllByTestId('courseFormAuthorsAdded').length).toEqual(3);
-	});
-
-	test('removes author from course authors list by click', () => {
-		const { container, getAllByTestId } = buildComponent(mockedStore);
-		const button = container.querySelectorAll(
-			'button[title="Delete author"]'
-		)[0];
-		fireEvent.click(button);
-		expect(getAllByTestId('courseFormAuthorsAdded').length).toEqual(1);
-	});
-});
-
-describe('CourseForm component', () => {
-	jest.mock('react-router-dom', () => ({
-		...jest.requireActual('react-router-dom'),
-		useParams: () => ({
-			courseId: 'fbba6300-b0a8-4483-8f07-fd4282eb3c04',
-		}),
-	}));
 
 	afterEach(() => {
 		jest.clearAllMocks();
 	});
 
-	test('shows course authors list', () => {
-		const { getAllByTestId } = buildComponent(mockedStore);
+	test('should show all authors list', () => {
+		const { getAllByTestId } = buildComponent(getMockedStore());
+		const authors = getAllByTestId('courseFormAuthor');
+		const mockedAuthors = getMockedStore().getState().allAuthors.authors;
+
+		expect(authors.length).toEqual(mockedAuthors.length);
+	});
+
+	test('should create author dispatch', () => {
+		const dispatch = jest.fn();
+		const { getByText } = buildComponent(getMockedStore());
+		const button = getByText('Create author');
+
+		fireEvent.click(button);
+		dispatch(addAuthor);
+
+		expect(dispatch).toHaveBeenCalledTimes(1);
+	});
+
+	test('should add author to course authors list by click', () => {
+		const { container, getAllByTestId } = buildComponent(getMockedStore());
+		const button = container.querySelectorAll('button[title="Add author"]')[0];
+
+		fireEvent.click(button);
+
+		expect(getAllByTestId('courseFormAuthorsAdded').length).toEqual(1);
+	});
+
+	test('should render form with empty fields', () => {
+		const { container } = buildComponent(getMockedStore());
+		const titleInput = container.querySelector('#courseTitle');
+		const descriptionInput = container.querySelector('#courseDescription');
+		const courseDuration = container.querySelector('#courseDuration');
+
+		expect(titleInput.value).toBe('');
+		expect(descriptionInput.value).toBe('');
+		expect(courseDuration.value).toBe('');
+	});
+});
+
+describe('<CourseForm />', () => {
+	beforeEach(() => {
+		useParams.mockReturnValue({
+			courseId: 'fbba6300-b0a8-4483-8f07-fd4282eb3c04',
+		});
+	});
+
+	afterEach(() => {
+		jest.clearAllMocks();
+	});
+
+	test('should show course authors list', () => {
+		const { getAllByTestId } = buildComponent(getMockedStore());
 		const authors = getAllByTestId('courseFormAuthorsAdded');
+
 		expect(authors.length).toBeGreaterThan(0);
+	});
+
+	test('should add new author to course authors list', () => {
+		const { container, getAllByTestId } = buildComponent(getMockedStore());
+		const button = container.querySelectorAll('button[title="Add author"]')[0];
+
+		fireEvent.click(button);
+
+		expect(getAllByTestId('courseFormAuthorsAdded')).toHaveLength(3);
+	});
+
+	test('should remove author from course authors list by click', () => {
+		const { container, getAllByTestId } = buildComponent(getMockedStore());
+		const button = container.querySelectorAll(
+			'button[title="Delete author"]'
+		)[0];
+
+		fireEvent.click(button);
+
+		expect(getAllByTestId('courseFormAuthorsAdded')).toHaveLength(1);
+	});
+
+	test('should render form with predefined values in the fields', () => {
+		const { container } = buildComponent(getMockedStore());
+		const titleInput = container.querySelector('#courseTitle');
+		const descriptionInput = container.querySelector('#courseDescription');
+		const courseDuration = container.querySelector('#courseDuration');
+
+		expect(titleInput.value).toBe('UI/UX');
+		expect(descriptionInput.value).toBe('Lorem ipsum 12');
+		expect(courseDuration.value).toBe('124');
 	});
 });
